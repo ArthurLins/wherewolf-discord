@@ -1,14 +1,12 @@
 package com.arthurl.wolfbot.game.engine.selections;
 
-import com.arthurl.wolfbot.Views.View;
+import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.requests.IRequest;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
 import gnu.trove.map.hash.THashMap;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 

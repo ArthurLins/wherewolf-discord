@@ -1,7 +1,6 @@
-package com.arthurl.wolfbot.Views;
+package com.arthurl.wolfbot.views;
 
 import com.arthurl.wolfbot.game.Game;
-import com.arthurl.wolfbot.game.engine.Engine;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
 import gnu.trove.map.hash.THashMap;
 import net.dv8tion.jda.core.EmbedBuilder;

@@ -1,10 +1,8 @@
 package com.arthurl.wolfbot.game.engine;
 
 import com.arthurl.wolfbot.Bootstrap;
-import com.arthurl.wolfbot.Views.View;
+import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.Game;
-import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
-import com.arthurl.wolfbot.game.engine.roles.role.types.Wolf;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
 import gnu.trove.map.hash.THashMap;
 

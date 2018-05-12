@@ -1,6 +1,6 @@
 package com.arthurl.wolfbot.game.engine.actions.action;
 
-import com.arthurl.wolfbot.Views.View;
+import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.engine.actions.AAction;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
 import com.arthurl.wolfbot.game.engine.users.GameUser;

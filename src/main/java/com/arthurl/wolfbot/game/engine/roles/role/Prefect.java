@@ -1,6 +1,6 @@
 package com.arthurl.wolfbot.game.engine.roles.role;
 
-import com.arthurl.wolfbot.Views.View;
+import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.engine.Engine;
 import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Civilian;

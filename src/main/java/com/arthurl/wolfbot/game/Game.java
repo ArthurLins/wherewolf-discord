@@ -1,7 +1,7 @@
 package com.arthurl.wolfbot.game;
 
 import com.arthurl.wolfbot.Bootstrap;
-import com.arthurl.wolfbot.Views.View;
+import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.engine.Engine;
 import com.arthurl.wolfbot.game.engine.actions.ActionManager;
 import com.arthurl.wolfbot.game.engine.requests.RequestManager;

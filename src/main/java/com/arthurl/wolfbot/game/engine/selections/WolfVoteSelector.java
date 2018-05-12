@@ -1,6 +1,5 @@
 package com.arthurl.wolfbot.game.engine.selections;
 
-import com.arthurl.wolfbot.Views.View;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Wolf;
