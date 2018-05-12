@@ -78,18 +78,11 @@
         </repository>
     </repositories>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.ini4j/ini4j -->
         <dependency>
             <groupId>org.ini4j</groupId>
             <artifactId>ini4j</artifactId>
             <version>0.5.1</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.github.austinv11</groupId>-->
-        <!--<artifactId>Discord4J</artifactId>-->
-        <!--<version>2.9.3</version>-->
-        <!--</dependency>-->
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -100,19 +93,16 @@
             <artifactId>okhttp</artifactId>
             <version>3.9.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>2.2.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.6</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jdbc -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
@@ -154,7 +144,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.6</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.sf.trove4j/trove4j -->
         <dependency>
             <groupId>net.sf.trove4j</groupId>
             <artifactId>trove4j</artifactId>
