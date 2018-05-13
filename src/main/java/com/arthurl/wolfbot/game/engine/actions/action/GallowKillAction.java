@@ -1,9 +1,9 @@
 package com.arthurl.wolfbot.game.engine.actions.action;
 
-import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.engine.actions.AAction;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 
 public class GallowKillAction extends AAction {
 
@@ -16,8 +16,8 @@ public class GallowKillAction extends AAction {
 
     @Override
     public void execute() {
-        GameUser killed = (GameUser) objects[0];
-        killed.setAlive(false);
+        final GameUser killed = (GameUser) objects[0];
+        killed.kill();
         View.gallowKill(game, killed);
 
     }

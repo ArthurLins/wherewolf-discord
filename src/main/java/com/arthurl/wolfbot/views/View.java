@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 public class View {
 
     // Game
-    public static void initGame(Game game) {
+    public static void initGame(final Game game) {
         //PV
         game.getGameUsers().forEach((k,user)->{
             user.sendMessage("Aviso pv (Novo jogo)");
@@ -22,19 +22,19 @@ public class View {
         game.getBroadcaster().send("~~~EXPLICAÇÃO TOP~~");
     }
 
-    public static void insufficientUsersToStart(Game game) {
-        game.getBroadcaster().send("Não há jogadores suficientes...");
+    public static void insufficientUsersToStart(final Game game) {
+        game.getBroadcaster().sendLang("game.insufficient-users");
     }
 
-    public static void gameFull(Game game, User user) {
-        game.getBroadcaster().send(game.getLang().get("game.full", user.getAsMention()));
+    public static void gameFull(final Game game, final User user) {
+        game.getBroadcaster().sendLang("game.full", user.getAsMention());
     }
 
-    public static void userInGame(Game game, User user) {
+    public static void userInGame(final Game game, final User user) {
         game.getBroadcaster().sendLang("game.already-in-game", user.getAsMention());
     }
 
-    public static void userJoin(Game game, User user) {
+    public static void userJoin(final Game game, final User user) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setImage(game.getLang().get("game.join-image"));
         eb.setTitle(game.getLang().get("game.join", user.getName()));
@@ -49,7 +49,7 @@ public class View {
         game.getBroadcaster().send(eb.build());
     }
 
-    public static void gameInit(Game game) {
+    public static void gameInit(final Game game) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setImage(game.getLang().get("game.invite-image"));
         eb.setTitle(game.getLang().get("game.invite-title"));
@@ -64,30 +64,31 @@ public class View {
         game.getBroadcaster().send(eb.build());
     }
 
-    public static void gallowKill(Game game, GameUser killed) {
-        game.getBroadcaster().send(killed.getUser().getAsMention() + " foi enforcado!");
+    public static void gallowKill(final Game game, final GameUser killed) {
+        game.getBroadcaster().sendLang("gallow.kill", killed.getUser().getAsMention(), killed.getRole().getName());
     }
 
-    public static void nightResume(Game game) {
+    public static void nightResume(final Game game) {
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Resumo da noite");
+        eb.setTitle(game.getLang().get("night-resume.title"));
         game.getGameUsers().forEach((k,v)->{
-            String name = (v.isAlive()) ? ":grimacing: ":":skull: ";
-            String job = (v.isHidden() || !v.isAlive())? "Desconhecido" : v.getRole().name;
+            final String name = (v.isAlive()) ? ":grimacing: " : ":skull: ";
+            final String job = (v.isHidden() && v.isAlive()) ? game.getLang().get("unknown") : v.getRole().getName();
             eb.addField(name + v.getUser().getName(), job, true);
         });
         eb.setColor(Color.red);
         game.getBroadcaster().send(eb.build());
     }
 
-    public static void inactivityForceEnd(Game game) {
+    public static void inactivityForceEnd(final Game game) {
         game.getBroadcaster().send("Afk.. jogo finalizado!");
     }
 
-    public static void defaultSelector(GameUser user, THashMap<Integer, GameUser> users, Predicate<GameUser> condition) {
+    public static void defaultUserSelectorAsk(final Game game, final GameUser user,
+                                              final THashMap<Integer, GameUser> users, final Predicate<GameUser> condition) {
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Selecione um usuário:");
-        eb.setDescription("Digite o numero correspondente");
+        eb.setTitle(game.getLang().get("default-user-selector.title"));
+        eb.setDescription(game.getLang().get("default-user-selector.description"));
         users.forEach((k, gameUser) -> {
             if (condition.test(gameUser)) {
                 if (gameUser.isAlive()) {
@@ -101,35 +102,11 @@ public class View {
         user.sendMessage(eb.build());
     }
 
-    public static void userIsDead(Game game, GameUser user) {
-        user.sendMessage(game.getLang().get("default-selector.is-dead"));
-    }
-
-    public static void sameUser(Game game, GameUser user) {
-        user.sendMessage("Você não pode escolher você mesmo.");
-    }
-
-    public static void selected(Game game, GameUser user) {
-        user.sendMessage(game.getLang().get("default-selector.selected"));
-    }
-
-    public static void userNotFound(Game game, GameUser user) {
-        user.sendMessage("Esta pessoa não exite.");
-    }
-
-    public static void selectionExpired(Game game, GameUser user) {
-        user.sendMessage("O tempo pra escolher acabou...");
-    }
-
-    public static void invalidOption(GameUser user) {
-        user.sendMessageLang("default-selector.invalid-option");
-    }
-
-    public static void genericOptionAsk(Game game, GameUser user, String[] options) {
+    public static void defaultOptionSelectorAsk(final Game game, final GameUser user, final String[] options) {
         int index = 1;
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Selecione uma Opção:");
-        eb.setDescription("Digite o numero correspondente");
+        eb.setTitle(game.getLang().get("default-option-selector.title"));
+        eb.setDescription(game.getLang().get("default-option-selector.description"));
         for (String option : options){
             eb.addField(""+index, option, false);
             index++;
@@ -137,36 +114,84 @@ public class View {
         user.sendMessage(eb.build());
     }
 
-    public static void gameDay(Game game) {
+
+    public static void userIsDead(final Game game, final GameUser user) {
+        user.sendMessageLang("default-selector.is-dead");
+    }
+
+    public static void sameUser(final Game game, final GameUser user) {
+        user.sendMessage("Você não pode escolher você mesmo.");
+    }
+
+    public static void selected(final Game game, final GameUser user) {
+        user.sendMessage(game.getLang().get("option-selected"));
+    }
+
+    public static void userNotFound(final Game game, final GameUser user) {
+        user.sendMessage("Esta pessoa não exite.");
+    }
+
+    public static void selectionExpired(Game game, GameUser user) {
+        user.sendMessage("O tempo pra escolher acabou...");
+    }
+
+    public static void invalidOption(final GameUser user) {
+        user.sendMessageLang("default-selector.invalid-option");
+    }
+
+    public static void gameDay(final Game game) {
         game.getBroadcaster().send(game.getLang().get("game.day"));
     }
 
-    public static void gameDayEnd(Game game) {
+    public static void gameDayEnd(final Game game) {
         game.getBroadcaster().send("Fim do dia...");
     }
 
-    public static void wolfsWins(Game game) {
+    public static void wolfsWins(final Game game) {
         game.getBroadcaster().send("Vitoria dos lobos!");
     }
 
-    public static void civiliansWins(Game game) {
+    public static void civiliansWins(final Game game) {
         game.getBroadcaster().send("Vitoria dos cidadoes!");
     }
 
-    public static void askPrefectToShowAll(GameUser selfuser) {
+    public static void askPrefectToShowAll(final GameUser selfuser) {
         selfuser.sendMessage("Você deseja mostrarar que é prefeito?");
     }
 
-    public static void gameEnd(Game game) {
+    public static void gameEnd(final Game game) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Resumo do jogo");
         game.getGameUsers().forEach((k,v)->{
             String name = (v.isAlive()) ? ":grimacing: ":":skull: ";
-            String job = v.getRole().name;
+            String job = v.getRole().getName();
             eb.addField(name + v.getUser().getName(), job, true);
         });
         eb.setColor(Color.red);
         game.getBroadcaster().send(eb.build());
     }
 
+    public static void seerViewAsk(GameUser selfuser) {
+        selfuser.sendMessage("Escolha o");
+    }
+
+    public static void sayRoleToUser(GameUser user) {
+        user.sendMessage("Você é `" + user.getRole().getName() + "` \n e sua obrigação na Vila é "
+                + user.getRole().getDescription());
+    }
+
+    public static void notHaveMonition(Game game, GameUser selfuser) {
+        selfuser.sendMessage("Você não tem munição!");
+    }
+
+    public static void hunterKillAsk(Game game, GameUser selfuser, int munition) {
+        selfuser.sendMessage("Em quem você deseja atirar? (Você tem " + munition + " muniçoes restantes)");
+    }
+
+    public static void wolfKillAsk(GameUser self) {
+        self.sendMessage("Escolha quem você quer matar: ");
+    }
+
+    public static void harlotVisitAsk(GameUser user) {
+    }
 }

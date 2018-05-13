@@ -9,8 +9,8 @@ public class ThreadPool {
     private boolean started;
 
     public ThreadPool() {
-        RejectedHandler rejectedHandler = new RejectedHandler();
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
+        final RejectedHandler rejectedHandler = new RejectedHandler();
+        final ThreadFactory threadFactory = Executors.defaultThreadFactory();
         this.threadPool = new ThreadPoolExecutor(3,
                 10,
                 10L,
@@ -32,6 +32,7 @@ public class ThreadPool {
             e.printStackTrace();
         }
     }
+
     public void run(Runnable rn, int delay){
         try {
             if (this.isStarted()) {
@@ -41,8 +42,6 @@ public class ThreadPool {
             e.printStackTrace();
         }
     }
-
-
     private boolean isStarted() {
         return started;
     }

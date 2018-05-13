@@ -14,14 +14,21 @@ public class WolfKillAction extends AAction {
 
     @Override
     public void execute() {
-        GameUser vitim = (GameUser) objects[0];
-        GameUser wolf = (GameUser) objects[1];
+        final GameUser wolf = (GameUser) objects[0];
+        final GameUser vitim = (GameUser) objects[1];
         if (!vitim.inHouse()) {
             wolf.sendMessageLang("wolf.kill-house-empty",
                     vitim.getUser().getDiscriminator());
             return;
         }
-        vitim.setAlive(false);
+        vitim.kill(wolf);
+        if (vitim.hasVisitors()) {
+            vitim.getRelated().forEach((user) -> {
+                user.kill();
+                user.sendMessage("Você morreu! Você deu o azar de esta com uma pessoa que foi atacada...");
+            });
+            vitim.sendMessage("Você foi morto por: " + wolf.getUser().getAsMention() + " e seus visitantes não se slavaram...");
+        }
         vitim.sendMessage("Você foi morto por: " + wolf.getUser().getAsMention());
     }
 }

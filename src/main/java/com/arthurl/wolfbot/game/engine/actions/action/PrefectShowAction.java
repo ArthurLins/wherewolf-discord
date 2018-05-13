@@ -13,7 +13,7 @@ public class PrefectShowAction extends AAction {
     }
     @Override
     public void execute() {
-        GameUser prefect = (GameUser)objects[0];
+        final GameUser prefect = (GameUser) objects[0];
         prefect.setHidden(false);
         game.getBroadcaster().sendLang("prefect.declare", prefect.getUser().getAsMention());
     }

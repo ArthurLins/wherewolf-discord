@@ -27,15 +27,47 @@ public class GameUser {
     }
 
     public void sendMessage(String msg) {
-        user.openPrivateChannel().queue(s -> {
-            s.sendMessage(msg).queue();
-        });
+        user.openPrivateChannel().queue(s -> s.sendMessage(msg).queue());
     }
 
     public void sendMessage(MessageEmbed msg) {
-        user.openPrivateChannel().queue(s -> {
-            s.sendMessage(msg).queue();
-        });
+        user.openPrivateChannel().queue(s -> s.sendMessage(msg).queue());
+    }
+
+    public void kill() {
+        if (!isAlive()) {
+            return;
+        }
+        if (role == null) {
+            return;
+        }
+        this.getRole().kill(null);
+    }
+
+    public void kill(final GameUser killer) {
+        if (!isAlive()) {
+            return;
+        }
+        if (role == null) {
+            return;
+        }
+        this.getRole().kill(killer);
+    }
+
+    public Object getAttr(String name) {
+        return dynamicAttributes.get(name);
+    }
+
+    public void setAttr(String name, Object value) {
+        if (dynamicAttributes.containsKey(name)) {
+            dynamicAttributes.replace(name, value);
+            return;
+        }
+        dynamicAttributes.put(name, value);
+    }
+
+    public boolean hasVisitors() {
+        return related.isEmpty();
     }
 
     public void sendMessageLang(String msg){

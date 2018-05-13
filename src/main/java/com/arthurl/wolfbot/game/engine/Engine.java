@@ -1,16 +1,16 @@
 package com.arthurl.wolfbot.game.engine;
 
 import com.arthurl.wolfbot.Bootstrap;
-import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 
 public class Engine {
 
-    public static final int DAY_TIMEOUT = 30000;   //1 sec
-    public static final int NIGHT_TIMEOUT = 30000; //1 sec
-    public static final int VOTE_TIMEOUT = 30000;  //1 sec
+    public static final int DAY_TIMEOUT = 60000;   //1 sec
+    public static final int NIGHT_TIMEOUT = 60000; //1 sec
+    public static final int VOTE_TIMEOUT = 60000;  //1 sec
 
     private boolean waiting_night = false;
     private boolean waiting_vote = false;
@@ -34,11 +34,7 @@ public class Engine {
         game.getGameUsers().forEach((key, user) -> {
             if (user.isAlive()) {
                 padding.put(key, user);
-                Bootstrap.getThreadPool().run(() -> {
-                    user.getRole().selfuser = user;
-                    user.getRole().game = game;
-                    user.getRole().day();
-                });
+                Bootstrap.getThreadPool().run(() -> user.getRole().day());
             }
         });
         Bootstrap.getThreadPool().run(this::dayOK, DAY_TIMEOUT);
@@ -53,11 +49,7 @@ public class Engine {
         game.getGameUsers().forEach((key, user) -> {
             if (user.isAlive()) {
                 padding.put(key, user);
-                Bootstrap.getThreadPool().run(() -> {
-                    user.getRole().selfuser = user;
-                    user.getRole().game = game;
-                    user.getRole().night();
-                });
+                Bootstrap.getThreadPool().run(() -> user.getRole().night());
             }
         });
         Bootstrap.getThreadPool().run(this::nightOK, NIGHT_TIMEOUT);
@@ -72,11 +64,7 @@ public class Engine {
         game.getGameUsers().forEach((key, user) -> {
             if (user.isAlive()) {
                 padding.put(key, user);
-                Bootstrap.getThreadPool().run(() -> {
-                    user.getRole().selfuser = user;
-                    user.getRole().game = game;
-                    user.getRole().vote();
-                });
+                Bootstrap.getThreadPool().run(() -> user.getRole().vote());
             }
         });
         Bootstrap.getThreadPool().run(this::voteOK, VOTE_TIMEOUT);
@@ -107,9 +95,10 @@ public class Engine {
 
     public void fireActionsExecuted() {
         if (!game.isStarted()){return;}
-        game.hasWinner();
-        View.nightResume(game);
-        day();
+        if (!game.hasWinner()) {
+            View.nightResume(game);
+            day();
+        }
     }
 
     private void voteOK() {
@@ -117,10 +106,11 @@ public class Engine {
         if (!waiting_vote) {
             return;
         }
-        game.hasWinner();
-        waiting_vote = false;
-        game.getVoteSelector().stop();
-        night();
+        if (!game.hasWinner()) {
+            waiting_vote = false;
+            game.getVoteSelector().stop();
+            night();
+        }
     }
 
     private void dayOK() {

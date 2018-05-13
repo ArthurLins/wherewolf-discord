@@ -1,9 +1,9 @@
 package com.arthurl.wolfbot.game.engine.selections;
 
-import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.requests.IRequest;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.function.BiConsumer;
@@ -17,7 +17,11 @@ public class DefaultOptionSelector {
         this.game = game;
     }
 
-    public void select(GameUser user, int tout, Consumer<GameUser> ask ,String[] options, BiConsumer<Integer,String> selected){
+    public void select(GameUser user, final int tout,
+                       final Consumer<GameUser> ask,
+                       final String[] options,
+                       final BiConsumer<Integer, String> selected) {
+
         game.getRequestManager().dialog(user, new IRequest() {
             @Override
             public long timeout() {
@@ -27,7 +31,7 @@ public class DefaultOptionSelector {
             @Override
             public void ask(GameUser user) {
                 ask.accept(user);
-                View.genericOptionAsk(game, user, options);
+                View.defaultOptionSelectorAsk(game, user, options);
             }
 
             @Override
@@ -40,6 +44,7 @@ public class DefaultOptionSelector {
                 try{
                     final int response = Integer.parseInt(e.getMessage().getContentRaw());
                     selected.accept(response, options[(response - 1)]);
+                    View.selected(game, user);
                     return true;
                 } catch (Exception ex) {
                     View.invalidOption(user);

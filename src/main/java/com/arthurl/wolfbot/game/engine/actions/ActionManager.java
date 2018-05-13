@@ -68,17 +68,13 @@ public class ActionManager {
     public synchronized void execute() {
         for (AAction action : highPriorityActions) {
             action.execute();
-            System.out.println("FIRED1");
         }
         for (AAction action : mediumPriorityActions) {
             action.execute();
-            System.out.println("FIRED2");
         }
         for (AAction action : lowPriorityActions) {
             action.execute();
-            System.out.println("FIRED3");
         }
-        System.out.println("FIRED");
         lowPriorityActions.clear();
         mediumPriorityActions.clear();
         highPriorityActions.clear();
@@ -90,7 +86,7 @@ public class ActionManager {
             return;
         }
         try {
-            AAction action = actions.get(actionKey).newInstance();
+            final AAction action = actions.get(actionKey).newInstance();
             //Pattern validation (if needs params)
             if (action.pattern != null) {
                 if (action.pattern.length != objects.length) {

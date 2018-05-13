@@ -2,6 +2,7 @@ package com.arthurl.wolfbot.game.engine.actions.action;
 
 import com.arthurl.wolfbot.game.engine.actions.AAction;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
+import com.arthurl.wolfbot.game.engine.roles.role.Hunter;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
 
 public class HunterKillAction extends AAction{
@@ -14,10 +15,11 @@ public class HunterKillAction extends AAction{
 
     @Override
     public void execute() {
-        GameUser hunter = (GameUser) objects[0];
-        GameUser killed = (GameUser) objects[1];
-
-        killed.setAlive(false);
+        final GameUser hunter = (GameUser) objects[0];
+        final GameUser killed = (GameUser) objects[1];
+        final int hunterMunition = (int) hunter.getAttr(Hunter.MUNITION);
+        killed.kill(hunter);
+        hunter.setAttr(Hunter.MUNITION, hunterMunition - 1);
         killed.sendMessage("Você foi morto pelo caçador");
 
     }

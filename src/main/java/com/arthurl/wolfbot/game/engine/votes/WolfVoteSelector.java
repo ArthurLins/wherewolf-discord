@@ -1,10 +1,10 @@
-package com.arthurl.wolfbot.game.engine.selections;
+package com.arthurl.wolfbot.game.engine.votes;
 
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Wolf;
-import com.arthurl.wolfbot.game.engine.util.ListManipulator;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.game.engine.util.ListManipulator;
 import gnu.trove.map.hash.THashMap;
 
 import static com.arthurl.wolfbot.game.engine.Engine.NIGHT_TIMEOUT;
@@ -19,7 +19,7 @@ public class WolfVoteSelector {
 
     private final Game game;
 
-    private boolean openToVote = false;
+    private volatile boolean openToVote = false;
 
     public WolfVoteSelector(Game game) {
         this.game = game;
@@ -40,20 +40,16 @@ public class WolfVoteSelector {
 
     public void stop() {
         openToVote = false;
-        GameUser user = getUserToKill();
+        final GameUser user = getUserToKill();
         if (user != null) {
             game.getActionManager().call(Actions.KILL, user);
             game.getRoleManager().aliveList(Wolf.class, true).forEach((wf)->{
                 wf.sendMessageLang("A manda matou " + user.getUser().getAsMention());
             });
-        } else {
-            //if not have any votes exit the game (probably afk)
-            if (game.getVoteSelector().qtdVotes() == 0){
-                //View.inactivityForceEnd(game);
-                //game.stop();
-                return;
-            }
-        }
+        } //else {
+        //morre ng
+
+        //}
         //return getUserToKill();
     }
 
@@ -82,13 +78,14 @@ public class WolfVoteSelector {
 
     }
 
-    private void addVote(GameUser user, int qtd) {
+    private void addVote(final GameUser user,
+                         final int qtd) {
 
         if (!votes.containsKey(user.getUser().getId())) {
             votes.put(user.getUser().getId(), 1);
             return;
         }
-        int qtdVote = votes.get(user.getUser().getId());
+        final int qtdVote = votes.get(user.getUser().getId());
         votes.replace(user.getUser().getId(), qtdVote, qtdVote + qtd);
 
     }

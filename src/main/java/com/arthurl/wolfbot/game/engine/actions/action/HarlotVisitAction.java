@@ -16,12 +16,12 @@ public class HarlotVisitAction extends AAction {
 
     @Override
     public void execute() {
-        GameUser harlot = (GameUser) objects[0];
-        GameUser visited = (GameUser) objects[1];
+        final GameUser harlot = (GameUser) objects[0];
+        final GameUser visited = (GameUser) objects[1];
         if (visited.inHouse()){
             harlot.setInHouse(false);
             if (visited.getRole().getClass().getSuperclass() == Wolf.class){
-                harlot.setAlive(false);
+                harlot.kill();
                 harlot.sendMessage("Você {{1}} que é um lobo, e morreu!");
                 return;
             }

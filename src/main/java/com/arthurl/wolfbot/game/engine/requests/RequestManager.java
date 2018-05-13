@@ -29,8 +29,8 @@ public class RequestManager {
         if (!waitingAnswers.containsKey(e.getAuthor().getId())) {
             return;
         }
-        ExpectedAnswer ea = waitingAnswers.get(e.getAuthor().getId());
-        GameUser gameUser = game.getUserById(e.getAuthor().getId());
+        final ExpectedAnswer ea = waitingAnswers.get(e.getAuthor().getId());
+        final GameUser gameUser = game.getUserById(e.getAuthor().getId());
         if (expired(e.getAuthor())) {
             waitingAnswers.remove(e.getAuthor().getId());
             ea.request.expired(gameUser);
@@ -63,8 +63,8 @@ public class RequestManager {
         if (!waitingAnswers.containsKey(user.getId())) {
             return true;
         }
-        ExpectedAnswer ea = waitingAnswers.get(user.getId());
-        long millis = ea.request_time;
+        final ExpectedAnswer ea = waitingAnswers.get(user.getId());
+        final long millis = ea.request_time;
         return (millis + ea.request.timeout()) < System.currentTimeMillis();
     }
 }

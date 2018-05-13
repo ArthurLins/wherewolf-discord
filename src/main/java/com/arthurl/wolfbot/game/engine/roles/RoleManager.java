@@ -3,11 +3,11 @@ package com.arthurl.wolfbot.game.engine.roles;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.roles.role.NormalWolf;
 import com.arthurl.wolfbot.game.engine.roles.role.Prefect;
-import com.arthurl.wolfbot.game.engine.roles.role.Villager;
-import com.arthurl.wolfbot.game.engine.roles.role.types.Civilian;
 import com.arthurl.wolfbot.game.engine.roles.role.Seer;
+import com.arthurl.wolfbot.game.engine.roles.role.Villager;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Wolf;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import java.util.Random;
 
 public class RoleManager {
 
-    private Game game;
-    private Random random = new Random();
-    private List<Class<? extends ARole>> roles = new ArrayList<>();
+    private final Game game;
+    private final Random random = new Random();
+    private final List<Class<? extends ARole>> roles = new ArrayList<>();
 
     public RoleManager(Game game) {
         this.game = game;
@@ -29,17 +29,17 @@ public class RoleManager {
         registerRole(Prefect.class);
     }
 
-    public void assingRoles() {
-        THashMap<String, GameUser> users = game.getGameUsers();
-        List<String> keyset = new ArrayList<>(users.keySet());
-        Collections.shuffle(keyset);
+    public void assignRoles() {
+        final THashMap<String, GameUser> users = game.getGameUsers();
+        final List<String> keySet = new ArrayList<>(users.keySet());
+        Collections.shuffle(keySet);
         int index = 0;
-        for (String userKey : keyset) {
+        for (String userKey : keySet) {
             if (index >= roles.size()) {
-                assingToUser(users.get(userKey), roles.get(0));
+                assignToUser(users.get(userKey), roles.get(0));
                 return;
             }
-            assingToUser(users.get(userKey), roles.get(index));
+            assignToUser(users.get(userKey), roles.get(index));
             index++;
         }
         //Todo implementation to best wolf dist...
@@ -47,7 +47,7 @@ public class RoleManager {
 
 
     public List<GameUser> aliveList(Class<? extends ARole> role, boolean superclass){
-        List<GameUser> aliveUsers = new ArrayList<>();
+        final List<GameUser> aliveUsers = new ArrayList<>();
         game.getGameUsers().forEach((k,v)->{
             //System.out.println("WOLF COUNT ->" + v.getUser().getName() + "|"+ v.getRole().getClass().getSuperclass());
             if (v.getRole().getClass() == role && v.isAlive() && !superclass){
@@ -61,9 +61,14 @@ public class RoleManager {
         return aliveUsers;
     }
 
-    private void assingToUser(GameUser user, Class<? extends ARole> role) {
+    private void assignToUser(final GameUser user, final Class<? extends ARole> role) {
         try {
-            user.setRole(role.newInstance());
+            final ARole roleInstance = role.newInstance();
+            roleInstance.selfuser = user;
+            roleInstance.game = game;
+            roleInstance.init();
+            user.setRole(roleInstance);
+            View.sayRoleToUser(user);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -75,8 +80,8 @@ public class RoleManager {
         if (count == 0) {
             return;
         }
-        Object[] keys = users.keySet().toArray();
-        String randKey = (String) keys[random.nextInt(users.size())];
+        final Object[] keys = users.keySet().toArray();
+        final String randKey = (String) keys[random.nextInt(users.size())];
         if (users.get(randKey).getRole().getClass() == role) {
             assing(role, users, count);
         }

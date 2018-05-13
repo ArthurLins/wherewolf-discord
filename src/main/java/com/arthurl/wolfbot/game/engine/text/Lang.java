@@ -8,7 +8,7 @@ public class Lang {
     private ResourceBundle message;
 
     public Lang(String lang) {
-        Locale currentLocale = new Locale(lang);
+        final Locale currentLocale = new Locale(lang);
         message = ResourceBundle.getBundle("Messages", currentLocale);
     }
 

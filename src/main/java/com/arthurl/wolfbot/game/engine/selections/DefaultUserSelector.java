@@ -1,9 +1,9 @@
 package com.arthurl.wolfbot.game.engine.selections;
 
-import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.requests.IRequest;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -12,27 +12,26 @@ import java.util.function.Predicate;
 
 public class DefaultUserSelector {
 
-    private THashMap<Integer, GameUser> users = new THashMap<>();
-    private Game game;
+    private final THashMap<Integer, GameUser> users = new THashMap<>();
+    private final Game game;
 
     public DefaultUserSelector(Game game) {
         this.game = game;
     }
 
-    public void select(GameUser user, int tout, Consumer<GameUser> ask, Consumer<GameUser> response){
-        this.select(user, tout, (choiceUser)-> {
-            if (user == choiceUser) {
-                return false;
-            }
-            if (!choiceUser.isAlive()) {
-                return false;
-            }
-            return true;
-        }, ask, response);
+    public void select(final GameUser user,
+                       final int tout,
+                       final Consumer<GameUser> ask,
+                       final Consumer<GameUser> response) {
+        this.select(user, tout,
+                (choiceUser) -> user != choiceUser && choiceUser.isAlive(), ask, response);
     }
 
-    public void select(GameUser user, int tout, Predicate<GameUser> condition,
-                       Consumer<GameUser> ask, Consumer<GameUser> response) {
+    public void select(final GameUser user,
+                       final int tout,
+                       final Predicate<GameUser> condition,
+                       final Consumer<GameUser> ask,
+                       final Consumer<GameUser> response) {
         ask.accept(user);
         game.getRequestManager().dialog(user, new IRequest() {
             @Override
@@ -43,7 +42,7 @@ public class DefaultUserSelector {
             @Override
             public void ask(GameUser user) {
                 buildVoteMap();
-                View.defaultSelector(user, users, condition);
+                View.defaultUserSelectorAsk(game, user, users, condition);
             }
 
             @Override
@@ -54,7 +53,7 @@ public class DefaultUserSelector {
             @Override
             public boolean response(MessageReceivedEvent e) {
                 try {
-                    Integer choice = Integer.parseInt(e.getMessage().getContentRaw());
+                    final int choice = Integer.parseInt(e.getMessage().getContentRaw());
                     GameUser choiceUser = users.get(choice);
                     if (choiceUser == null) {
                         View.userNotFound(game, user);
@@ -76,7 +75,7 @@ public class DefaultUserSelector {
     }
 
     private void buildVoteMap() {
-        THashMap<String, GameUser> gameUsers = game.getGameUsers();
+        final THashMap<String, GameUser> gameUsers = game.getGameUsers();
         int index = 1;
         for (String key : gameUsers.keySet()) {
             users.put(index, gameUsers.get(key));

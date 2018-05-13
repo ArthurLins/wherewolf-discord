@@ -1,11 +1,11 @@
-package com.arthurl.wolfbot.game.engine.selections;
+package com.arthurl.wolfbot.game.engine.votes;
 
 import com.arthurl.wolfbot.Bootstrap;
-import com.arthurl.wolfbot.views.View;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
-import com.arthurl.wolfbot.game.engine.util.ListManipulator;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.game.engine.util.ListManipulator;
+import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 
 import static com.arthurl.wolfbot.game.engine.Engine.VOTE_TIMEOUT;
@@ -15,12 +15,10 @@ public class VoteSelector {
 
     //Voted user - qtd of votes
     private final THashMap<String, Integer> votes = new THashMap<>();
-    //user id - multiplication
-    //private final THashMap<String, Integer> waitingToVote = new THashMap<>();
 
     private final Game game;
 
-    private boolean openToVote = false;
+    private volatile boolean openToVote = false;
 
     public VoteSelector(Game game) {
         this.game = game;
@@ -36,7 +34,7 @@ public class VoteSelector {
 
     public void stop() {
         openToVote = false;
-        GameUser user = getUserToKill();
+        final GameUser user = getUserToKill();
         if (user != null) {
             game.getActionManager().call(Actions.KILL, user);
             game.getBroadcaster().send("Votação encerrada");
@@ -56,7 +54,7 @@ public class VoteSelector {
         return game.getUserById(ListManipulator.getUniqueBigKey(votes));
     }
 
-    public void requestVote(GameUser gameUser, int multiplication) {
+    public void requestVote(final GameUser gameUser, final int multiplication) {
         if (!openToVote) {
             return;
         }
@@ -79,8 +77,7 @@ public class VoteSelector {
         return votes.size();
     }
 
-    private void addVote(GameUser user, int qtd) {
-
+    private void addVote(final GameUser user, final int qtd) {
         if (!votes.containsKey(user.getUser().getId())) {
             votes.put(user.getUser().getId(), 1);
             return;

@@ -1,12 +1,14 @@
 package com.arthurl.wolfbot.game.engine.roles.role.types;
 
 import com.arthurl.wolfbot.game.engine.roles.ARole;
+import com.arthurl.wolfbot.game.engine.users.GameUser;
 
 public abstract class Civilian extends ARole {
 
-    {
-        name = "Cidadão";
-        description = "Não faz nada não!";
+    @Override
+    public void init() {
+        setName(text("villager.name"));
+        setDescription(text("villager.description"));
     }
 
     @Override
@@ -22,5 +24,10 @@ public abstract class Civilian extends ARole {
     @Override
     public void vote() {
         defaultVote(1);
+    }
+
+    @Override
+    public void kill(GameUser killer) {
+        defaultDie();
     }
 }

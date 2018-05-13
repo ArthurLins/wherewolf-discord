@@ -8,8 +8,8 @@ import net.dv8tion.jda.core.requests.restaction.MessageAction;
 public class Broadcaster {
 
 
-    private MessageChannel broadcasterChannel;
-    private Game game;
+    private final MessageChannel broadcasterChannel;
+    private final Game game;
 
 
     public Broadcaster(MessageChannel tc, Game game) {
