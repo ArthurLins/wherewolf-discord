@@ -10,21 +10,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Engine {
 
-    public static final int DAY_TIMEOUT = 60000;   //1 sec
-    public static final int NIGHT_TIMEOUT = 60000; //1 sec
-    public static final int VOTE_TIMEOUT = 60000;  //1 sec
+    public static int DAY_TIMEOUT = 60000;   //1 sec
+    public static int NIGHT_TIMEOUT = 60000; //1 sec
+    public static int VOTE_TIMEOUT = 60000;  //1 sec
 
     private volatile AtomicInteger cycleCount = new AtomicInteger();
 
     private boolean waiting_night = false;
     private boolean waiting_vote = false;
 
-    private THashMap<String, GameUser> padding = new THashMap<>();
+    private final THashMap<String, GameUser> padding = new THashMap<>();
 
-    private Game game;
+    private final Game game;
 
-    public Engine(Game game) {
+    public Engine(final Game game, final int day_timeout, final int night_timeout, final int vote_timeout) {
         this.game = game;
+        Engine.DAY_TIMEOUT = day_timeout;
+        Engine.NIGHT_TIMEOUT = night_timeout;
+        Engine.VOTE_TIMEOUT = vote_timeout;
     }
 
     public void startCycle() {

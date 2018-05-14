@@ -40,14 +40,28 @@ public class Game {
     private THashMap<String, GameUser> gameUsers = new THashMap<>();
     private volatile boolean started = false;
 
+    Game(final MessageChannel mainChannel,
+         final User creator,
+         final int maxUsers,
+         final int minToStart) {
+        this(mainChannel, creator, maxUsers, minToStart, "pt_br", 120000, 120000, 120000);
+    }
 
-    Game(MessageChannel mainChannel, User creator, int maxUsers, int minToStart, String lang) {
+    Game(final MessageChannel mainChannel,
+         final User creator,
+         final int maxUsers,
+         final int minToStart,
+         final String lang,
+         final int night_timeout,
+         final int day_timeout,
+         final int vote_timeout) {
+
         this.maxUsers = maxUsers;
         this.minToStart = minToStart;
         this.messageChannel = mainChannel;
         this.creator = creator;
         this.lang = new Lang(lang);
-        this.engine = new Engine(this);
+        this.engine = new Engine(this, day_timeout, night_timeout, vote_timeout);
         this.broadcaster = new Broadcaster(mainChannel, this);
         this.actionManager = new ActionManager(this);
         this.voteSelector = new VoteSelector(this);

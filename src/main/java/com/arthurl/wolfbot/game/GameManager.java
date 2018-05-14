@@ -26,8 +26,7 @@ public class GameManager {
         final Game game = new Game(event.getChannel(),
                 event.getAuthor(),
                 41,
-                2,
-                "pt_BR"
+                2
         );
         games.put(event.getChannel().getId(), game);
     }
