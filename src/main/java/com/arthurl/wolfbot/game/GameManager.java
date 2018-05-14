@@ -11,9 +11,7 @@ public class GameManager {
 
     public void gameChatListener(MessageReceivedEvent event) {
 
-        games.forEach((k, v) -> {
-            v.onMessageDiscordReceived(event);
-        });
+        games.forEach((k, v) -> v.onMessageDiscordReceived(event));
     }
 
     public synchronized void create(MessageReceivedEvent event) {
