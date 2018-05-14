@@ -15,7 +15,7 @@ public class GameUser {
     private final Game game;
     private final List<GameUser> related = new ArrayList<>();
     private final List<GameUser> roleKnows = new ArrayList<>();
-    private final Map<Attribute, Object> attributes = new THashMap<>();
+    private final Map<Attribute, Object> attr = new THashMap<>();
     private volatile boolean inHouse = true;
     private volatile boolean alive = true;
     private volatile boolean hidden = true;
@@ -55,15 +55,15 @@ public class GameUser {
     }
 
     public Object getAttr(Attribute name) {
-        return attributes.get(name);
+        return attr.get(name);
     }
 
     public void setAttr(Attribute name, Object value) {
-        if (attributes.containsKey(name)) {
-            attributes.replace(name, value);
+        if (attr.containsKey(name)) {
+            attr.replace(name, value);
             return;
         }
-        attributes.put(name, value);
+        attr.put(name, value);
     }
 
     public void setAttr(Attribute name) {
@@ -71,12 +71,12 @@ public class GameUser {
     }
 
     public boolean hasAttr(Attribute attribute) {
-        return attributes.containsKey(attribute);
+        return attr.containsKey(attribute);
     }
 
     public void removeAttr(Attribute attribute) {
-        if (attributes.containsKey(attribute)) {
-            attributes.remove(attribute);
+        if (attr.containsKey(attribute)) {
+            attr.remove(attribute);
         }
     }
 
@@ -145,7 +145,7 @@ public class GameUser {
     }
 
     public Map<Attribute, Object> getAttributes() {
-        return attributes;
+        return attr;
     }
 
     public boolean isHidden() {
