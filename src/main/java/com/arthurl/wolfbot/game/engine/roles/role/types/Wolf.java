@@ -3,7 +3,7 @@ package com.arthurl.wolfbot.game.engine.roles.role.types;
 import com.arthurl.wolfbot.game.engine.Engine;
 import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
 import com.arthurl.wolfbot.game.engine.roles.ARole;
-import com.arthurl.wolfbot.game.engine.users.Attribute;
+import com.arthurl.wolfbot.game.engine.users.Attributes;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
 import com.arthurl.wolfbot.views.View;
 
@@ -17,9 +17,9 @@ public abstract class Wolf extends ARole {
 
     @Override
     public void night() {
-        if (userHasAttr(Attribute.DRUNK)) {
+        if (userHasAttr(Attributes.DRUNK)) {
             View.wolfIsDrunk(selfuser);
-            removeUserAttr(Attribute.DRUNK);
+            removeUserAttr(Attributes.DRUNK);
             return;
         }
         if (game.getRoleManager().aliveList(Wolf.class, true).size() > 1){

@@ -1,6 +1,7 @@
 package com.arthurl.wolfbot.game.engine.users;
 
-public enum Attribute {
+public enum Attributes {
+    //
     MUNITION,
     DRUNK,
 }

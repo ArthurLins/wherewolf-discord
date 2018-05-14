@@ -15,7 +15,7 @@ public class GameUser {
     private final Game game;
     private final List<GameUser> related = new ArrayList<>();
     private final List<GameUser> roleKnows = new ArrayList<>();
-    private final Map<Attribute, Object> attr = new THashMap<>();
+    private final Map<Attributes, Object> attr = new THashMap<>();
     private volatile boolean inHouse = true;
     private volatile boolean alive = true;
     private volatile boolean hidden = true;
@@ -54,11 +54,11 @@ public class GameUser {
         this.getRole().kill(killer);
     }
 
-    public Object getAttr(Attribute name) {
+    public Object getAttr(Attributes name) {
         return attr.get(name);
     }
 
-    public void setAttr(Attribute name, Object value) {
+    public void setAttr(Attributes name, Object value) {
         if (attr.containsKey(name)) {
             attr.replace(name, value);
             return;
@@ -66,17 +66,17 @@ public class GameUser {
         attr.put(name, value);
     }
 
-    public void setAttr(Attribute name) {
+    public void setAttr(Attributes name) {
         setAttr(name, null);
     }
 
-    public boolean hasAttr(Attribute attribute) {
-        return attr.containsKey(attribute);
+    public boolean hasAttr(Attributes attributes) {
+        return attr.containsKey(attributes);
     }
 
-    public void removeAttr(Attribute attribute) {
-        if (attr.containsKey(attribute)) {
-            attr.remove(attribute);
+    public void removeAttr(Attributes attributes) {
+        if (attr.containsKey(attributes)) {
+            attr.remove(attributes);
         }
     }
 
@@ -144,7 +144,7 @@ public class GameUser {
         this.hidden = hidden;
     }
 
-    public Map<Attribute, Object> getAttributes() {
+    public Map<Attributes, Object> getAttributes() {
         return attr;
     }
 

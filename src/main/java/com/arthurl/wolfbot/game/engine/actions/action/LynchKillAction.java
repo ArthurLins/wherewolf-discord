@@ -17,6 +17,6 @@ public class LynchKillAction extends AAction {
         final GameUser killed = (GameUser) objects[0];
         killed.kill();
         View.lynchKill(game, killed);
-
+        //
     }
 }
