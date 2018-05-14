@@ -13,13 +13,8 @@ public class View {
 
     // Game
     public static void initGame(final Game game) {
-        //PV
-        game.getGameUsers().forEach((k,user)->{
-            user.sendMessage("Aviso pv (Novo jogo)");
-        });
         //All
         game.getBroadcaster().send("Inicio do jogo");
-        game.getBroadcaster().send("~~~EXPLICAÇÃO TOP~~");
     }
 
     public static void insufficientUsersToStart(final Game game) {
@@ -64,17 +59,17 @@ public class View {
         game.getBroadcaster().send(eb.build());
     }
 
-    public static void gallowKill(final Game game, final GameUser killed) {
+    public static void lynchKill(final Game game, final GameUser killed) {
         game.getBroadcaster().sendLang("gallow.kill", killed.getUser().getAsMention(), killed.getRole().getName());
     }
 
     public static void nightResume(final Game game) {
-        EmbedBuilder eb = new EmbedBuilder();
+        final EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(game.getLang().get("night-resume.title"));
         game.getGameUsers().forEach((k,v)->{
-            final String name = (v.isAlive()) ? ":grimacing: " : ":skull: ";
+            final String state = (v.isAlive()) ? " :grimacing: Vivo(a) " : " :skull: Morto(a) ";
             final String job = (v.isHidden() && v.isAlive()) ? game.getLang().get("unknown") : v.getRole().getName();
-            eb.addField(name + v.getUser().getName(), job, true);
+            eb.addField(v.getUser().getName() + state, job, true);
         });
         eb.setColor(Color.red);
         game.getBroadcaster().send(eb.build());
@@ -86,7 +81,7 @@ public class View {
 
     public static void defaultUserSelectorAsk(final Game game, final GameUser user,
                                               final THashMap<Integer, GameUser> users, final Predicate<GameUser> condition) {
-        EmbedBuilder eb = new EmbedBuilder();
+        final EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(game.getLang().get("default-user-selector.title"));
         eb.setDescription(game.getLang().get("default-user-selector.description"));
         users.forEach((k, gameUser) -> {
@@ -95,7 +90,7 @@ public class View {
                     eb.addField(k + "",
                             gameUser.getUser().getName(), false);
                 } else {
-                    eb.addField(":skull:", gameUser.getUser().getName(), false);
+                    eb.addField(":skull: Morto(a)", gameUser.getUser().getName(), false);
                 }
             }
         });
@@ -104,7 +99,7 @@ public class View {
 
     public static void defaultOptionSelectorAsk(final Game game, final GameUser user, final String[] options) {
         int index = 1;
-        EmbedBuilder eb = new EmbedBuilder();
+        final EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(game.getLang().get("default-option-selector.title"));
         eb.setDescription(game.getLang().get("default-option-selector.description"));
         for (String option : options){
@@ -160,12 +155,12 @@ public class View {
     }
 
     public static void gameEnd(final Game game) {
-        EmbedBuilder eb = new EmbedBuilder();
+        final EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Resumo do jogo");
         game.getGameUsers().forEach((k,v)->{
-            String name = (v.isAlive()) ? ":grimacing: ":":skull: ";
-            String job = v.getRole().getName();
-            eb.addField(name + v.getUser().getName(), job, true);
+            final String state = (v.isAlive()) ? " :grimacing: Vivo(a) " : " :skull: Morto(a) ";
+            final String job = v.getRole().getName();
+            eb.addField(v.getUser().getName() + state, job, true);
         });
         eb.setColor(Color.red);
         game.getBroadcaster().send(eb.build());
@@ -193,5 +188,30 @@ public class View {
     }
 
     public static void harlotVisitAsk(GameUser user) {
+        user.sendMessage("Quem você deseja visitar?");
+    }
+
+    public static void wolfKillDrunk(GameUser wolf) {
+        wolf.sendMessage("Você matou um bebado, agora você esta bebado e não poderá jogar por 1 rodada");
+    }
+
+    public static void wolfIsDrunk(GameUser selfuser) {
+        selfuser.sendMessage("Você esta bebado... esta noite você não pode atacar ng!");
+    }
+
+    public static void drunkNightMessage(GameUser selfuser) {
+        selfuser.sendMessage("Você é um simples bebado, apenas se recolhe para sua casa, e vai dormir.");
+    }
+
+    public static void gunnerNightMessage(GameUser selfuser) {
+        selfuser.sendMessage("Espere o dia para realizar suas açoes...");
+    }
+
+    public static void gameNight(Game game) {
+        game.getBroadcaster().sendLang("game.night");
+    }
+
+    public static void gameVote(Game game) {
+        game.getBroadcaster().send(game.getLang().get("game.vote"));
     }
 }

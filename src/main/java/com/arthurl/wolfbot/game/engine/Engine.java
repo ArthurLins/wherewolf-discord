@@ -6,11 +6,15 @@ import com.arthurl.wolfbot.game.engine.users.GameUser;
 import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Engine {
 
     public static final int DAY_TIMEOUT = 60000;   //1 sec
     public static final int NIGHT_TIMEOUT = 60000; //1 sec
     public static final int VOTE_TIMEOUT = 60000;  //1 sec
+
+    private volatile AtomicInteger cycleCount = new AtomicInteger();
 
     private boolean waiting_night = false;
     private boolean waiting_vote = false;
@@ -43,7 +47,7 @@ public class Engine {
     private void night() {
         if (!game.isStarted()){return;}
         padding.clear();
-        game.getBroadcaster().send(game.getLang().get("game.night"));
+        View.gameNight(game);
         waiting_night = true;
         game.getWolfVoteSelector().start();
         game.getGameUsers().forEach((key, user) -> {
@@ -53,12 +57,13 @@ public class Engine {
             }
         });
         Bootstrap.getThreadPool().run(this::nightOK, NIGHT_TIMEOUT);
+        cycleCount.incrementAndGet();
     }
 
     private void vote() {
         if (!game.isStarted()){return;}
         padding.clear();
-        game.getBroadcaster().send(game.getLang().get("game.vote"));
+        View.gameVote(game);
         game.getVoteSelector().start();
         waiting_vote = true;
         game.getGameUsers().forEach((key, user) -> {

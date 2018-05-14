@@ -2,6 +2,7 @@ package com.arthurl.wolfbot.game.engine.roles;
 
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
+import com.arthurl.wolfbot.game.engine.users.Attribute;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
 
 import javax.annotation.Nullable;
@@ -33,13 +34,22 @@ public abstract class ARole {
         this.description = description;
     }
 
-    public Object getUserAttr(String name) {
+    public Object getUserAttr(Attribute name) {
         return selfuser.getAttr(name);
     }
 
-    public void setUserAttr(String name, Object value) {
+    public boolean userHasAttr(Attribute name) {
+        return selfuser.hasAttr(name);
+    }
+
+    public void removeUserAttr(Attribute name) {
+        selfuser.removeAttr(name);
+    }
+
+    public void setUserAttr(Attribute name, Object value) {
         selfuser.setAttr(name, value);
     }
+
 
     protected void optionSelector(final String[] options,
                                   final Consumer<GameUser> ask,

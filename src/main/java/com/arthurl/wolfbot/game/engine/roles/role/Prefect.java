@@ -9,8 +9,8 @@ public class Prefect extends Civilian {
 
     @Override
     public void init() {
-        setName("Prefeito");
-        setDescription("desc");
+        setName(text("prefect.name"));
+        setDescription(text("prefect.description"));
     }
 
     @Override

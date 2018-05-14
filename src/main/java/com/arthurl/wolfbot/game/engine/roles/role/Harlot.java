@@ -9,8 +9,8 @@ public class Harlot extends Civilian {
 
     @Override
     public void init() {
-        setName("Puta");
-        setDescription("desc");
+        setName(text("harlot.name"));
+        setDescription(text("harlot.description"));
     }
 
     @Override

@@ -8,8 +8,6 @@ import com.arthurl.wolfbot.game.engine.users.GameUser;
 public class HarlotVisitAction extends AAction {
 
     {
-        name = "visit";
-        description = "visit user";
         pattern = new Class[]{GameUser.class, GameUser.class};
         priority = ActionPriority.ASYNC;
     }

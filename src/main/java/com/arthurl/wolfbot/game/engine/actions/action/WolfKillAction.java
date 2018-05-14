@@ -6,8 +6,6 @@ import com.arthurl.wolfbot.game.engine.users.GameUser;
 
 public class WolfKillAction extends AAction {
     {
-        name = "Lobo mata alguém";
-        description = "Lobo mata alguem";
         pattern = new Class[]{GameUser.class, GameUser.class};
         priority = ActionPriority.LOW;
     }

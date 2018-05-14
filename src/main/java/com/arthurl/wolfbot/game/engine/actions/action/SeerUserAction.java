@@ -7,8 +7,6 @@ import com.arthurl.wolfbot.game.engine.users.GameUser;
 public class SeerUserAction extends AAction {
 
     {
-        name="Seer";
-        description = "Revels to users";
         pattern = new Class[]{GameUser.class, GameUser.class};
         priority = ActionPriority.ASYNC;
     }

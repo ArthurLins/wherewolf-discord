@@ -21,9 +21,9 @@ public class ActionManager {
 
     public ActionManager(Game game) {
         this.game = game;
-        registerAction(Actions.KILL, GallowKillAction.class);
+        registerAction(Actions.KILL, LynchKillAction.class);
         registerAction(Actions.WOLFKILL, WolfKillAction.class);
-        registerAction(Actions.HUNTER_KILL, HunterKillAction.class);
+        registerAction(Actions.HUNTER_KILL, GunnerKillAction.class);
         registerAction(Actions.SEER_USER, SeerUserAction.class);
         registerAction(Actions.PREFECT_SHOW, PrefectShowAction.class);
         registerAction(Actions.HARLOT_VISIT, HarlotVisitAction.class);

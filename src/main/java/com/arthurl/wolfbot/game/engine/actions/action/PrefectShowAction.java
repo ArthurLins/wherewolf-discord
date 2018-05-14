@@ -6,8 +6,6 @@ import com.arthurl.wolfbot.game.engine.users.GameUser;
 
 public class PrefectShowAction extends AAction {
     {
-        name = "show";
-        description = "show to user how u are";
         pattern = new Class[]{GameUser.class};
         priority = ActionPriority.MEDIUM;
     }
