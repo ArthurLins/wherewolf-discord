@@ -2,7 +2,12 @@ package com.arthurl.wolfbot.game.engine;
 
 import com.arthurl.wolfbot.Bootstrap;
 import com.arthurl.wolfbot.game.Game;
+import com.arthurl.wolfbot.game.engine.actions.action.LynchKill;
+import com.arthurl.wolfbot.game.engine.actions.action.WolfKill;
+import com.arthurl.wolfbot.game.engine.roles.role.types.Civilian;
+import com.arthurl.wolfbot.game.engine.roles.role.types.Wolf;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.game.engine.votes.VoteTypes;
 import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 
@@ -14,14 +19,13 @@ public class Engine {
     public static int NIGHT_TIMEOUT = 60000; //1 sec
     public static int VOTE_TIMEOUT = 60000;  //1 sec
 
-    private volatile AtomicInteger cycleCount = new AtomicInteger();
-
     private boolean waiting_night = false;
     private boolean waiting_vote = false;
 
-    private final THashMap<String, GameUser> padding = new THashMap<>();
-
     private final Game game;
+
+    private final THashMap<String, GameUser> padding = new THashMap<>();
+    private volatile AtomicInteger cycleCount = new AtomicInteger(1);
 
     public Engine(final Game game, final int day_timeout, final int night_timeout, final int vote_timeout) {
         this.game = game;
@@ -36,7 +40,6 @@ public class Engine {
     }
 
     private void day() {
-        if (!game.isStarted()){return;}
         View.gameDay(game);
         game.getGameUsers().forEach((key, user) -> {
             if (user.isAlive()) {
@@ -48,11 +51,11 @@ public class Engine {
     }
 
     private void night() {
-        if (!game.isStarted()){return;}
-        padding.clear();
+        View.cycleSeparator(game, cycleCount);
         View.gameNight(game);
+        padding.clear();
         waiting_night = true;
-        game.getWolfVoteSelector().start();
+        game.getVoteManager().wolfVoteStart();
         game.getGameUsers().forEach((key, user) -> {
             if (user.isAlive()) {
                 padding.put(key, user);
@@ -64,11 +67,9 @@ public class Engine {
     }
 
     private void vote() {
-        if (!game.isStarted()){return;}
-        padding.clear();
         View.gameVote(game);
-        game.getVoteSelector().start();
-        waiting_vote = true;
+        padding.clear();
+        game.getVoteManager().defaultVoteStart();
         game.getGameUsers().forEach((key, user) -> {
             if (user.isAlive()) {
                 padding.put(key, user);
@@ -79,7 +80,6 @@ public class Engine {
     }
 
     public void fireVoteOK(GameUser gameUser) {
-        if (!game.isStarted()){return;}
         if (!padding.containsKey(gameUser.getUser().getId())) {
             return;
         }
@@ -90,7 +90,6 @@ public class Engine {
     }
 
     public void fireNightOK(GameUser gameUser) {
-        if (!game.isStarted()){return;}
         if (!padding.containsKey(gameUser.getUser().getId())) {
             return;
         }
@@ -100,40 +99,60 @@ public class Engine {
         }
     }
 
-
     public void fireActionsExecuted() {
-        if (!game.isStarted()){return;}
-        if (!game.hasWinner()) {
+        checkWin(() -> {
             View.nightResume(game);
             day();
-        }
+        });
     }
 
     private void voteOK() {
-        if (!game.isStarted()){return;}
-        if (!waiting_vote) {
-            return;
-        }
-        if (!game.hasWinner()) {
-            waiting_vote = false;
-            game.getVoteSelector().stop();
-            night();
-        }
+        game.getVoteManager().stop(
+                VoteTypes.DEFAULT,
+                (user) -> {
+                    game.getActionManager().call(LynchKill.class, user);
+                    game.getBroadcaster().send("Votação encerrada");
+                    checkWin(this::night);
+                },
+                () -> View.gameVoteTied(game),
+                () -> {
+                    View.inactivityForceEnd(game);
+                    Bootstrap.getGameManager().stopGame(game);
+                }
+        );
     }
 
     private void dayOK() {
-        if (!game.isStarted()){return;}
         View.gameDayEnd(game);
         vote();
     }
 
     private void nightOK() {
-        if (!game.isStarted()){return;}
         if (!waiting_night) {
             return;
         }
+        game.getVoteManager().stop(
+                VoteTypes.WOLF,
+                (win) -> game.getActionManager().call(WolfKill.class, win),
+                () -> game.getRoleManager().aliveList(Wolf.class).forEach(View::wolfVoteTied),
+                () -> game.getRoleManager().aliveList(Wolf.class).forEach(View::wolfVoteTied)
+        );
         waiting_night = false;
         game.getActionManager().execute();
+    }
+
+    private void checkWin(Runnable no) {
+        game.hasWinner(
+                (winRole) -> {
+                    if (winRole == Civilian.class) {
+                        View.civiliansWins(game);
+                    } else if (winRole == Wolf.class) {
+                        View.wolfsWins(game);
+                    }
+                    View.gameEnd(game);
+                    Bootstrap.getGameManager().stopGame(game);
+                }, no
+        );
     }
 
 }

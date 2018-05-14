@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.User;
 
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 public class View {
@@ -179,7 +180,7 @@ public class View {
         selfuser.sendMessage("Você não tem munição!");
     }
 
-    public static void hunterKillAsk(Game game, GameUser selfuser, int munition) {
+    public static void gunnerKillAsk(Game game, GameUser selfuser, int munition) {
         selfuser.sendMessage("Em quem você deseja atirar? (Você tem " + munition + " muniçoes restantes)");
     }
 
@@ -213,5 +214,79 @@ public class View {
 
     public static void gameVote(Game game) {
         game.getBroadcaster().send(game.getLang().get("game.vote"));
+    }
+
+    public static void defaultCivilianNight(GameUser selfuser) {
+        selfuser.sendMessage("Civis não fazem nada a noite...");
+    }
+
+    public static void killedByGunner(Game game, GameUser killed) {
+        killed.sendMessage("Você foi morto pelo atirador");
+    }
+
+    public static void harlotVisitWolf(Game game, GameUser gameUser, GameUser harlot) {
+        harlot.sendMessage("Você {{1}} que é um lobo, e morreu!");
+    }
+
+    public static void harlotVisit(Game game, GameUser harlot, GameUser visited) {
+        harlot.sendMessage("Você visitou {{1}} e descobriu que ele é {{2}}");
+        visited.sendMessage("Você recebeu uma visita de {{1}} que é uma porstituta!");
+    }
+
+    public static void prefectDeclare(Game game, GameUser prefect) {
+        game.getBroadcaster().sendLang("prefect.declare", prefect.getUser().getAsMention());
+    }
+
+    public static void seeUser(Game game, GameUser seer, GameUser user) {
+        seer.sendMessage(user.getUser().getName() + " é "
+                + user.getRole().getName());
+    }
+
+    public static void wolfKillHouseEmpty(Game game, GameUser wolf, GameUser vitim) {
+        wolf.sendMessageLang("wolf.kill-house-empty",
+                vitim.getUser().getDiscriminator());
+    }
+
+    public static void wolfRelatedKill(Game game, GameUser wolf, GameUser user) {
+        user.sendMessage("Você morreu! Você deu o azar de esta com uma pessoa que foi atacada...");
+    }
+
+    public static void wolfKillAndRelated(Game game, GameUser vitim, GameUser wolf) {
+        vitim.sendMessage("Você foi morto por: " + wolf.getUser().getAsMention() + " e seus visitantes não se slavaram...");
+    }
+
+    public static void wolfKill(Game game, GameUser vitim, GameUser wolf) {
+        vitim.sendMessage("Você foi morto por: " + wolf.getUser().getAsMention());
+    }
+
+    public static void cycleSeparator(Game game, AtomicInteger cycleCount) {
+        game.getBroadcaster().send("------------ NOITE " + cycleCount + "------------");
+    }
+
+    public static void gameVoteTied(Game game) {
+        game.getBroadcaster().send("Votação empatada... ng morre");
+    }
+
+    public static void askLynch(GameUser ask) {
+        ask.sendMessage("Quem você deseja linchar?");
+    }
+
+    public static void wolfVoteAsk(GameUser ask) {
+        ask.sendMessage("Vote para a matilha matar: ");
+    }
+
+    public static void wolfVoteSelect(GameUser user, GameUser selected) {
+
+    }
+
+    public static void defaultVoteAsk(GameUser user) {
+    }
+
+    public static void defaultVoteSelection(GameUser user, GameUser selected) {
+
+    }
+
+    public static void wolfVoteTied(GameUser wolf) {
+        wolf.sendMessage("Votação empatada... os lobos não vão atacar ng");
     }
 }

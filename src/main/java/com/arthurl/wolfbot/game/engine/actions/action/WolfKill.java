@@ -3,8 +3,9 @@ package com.arthurl.wolfbot.game.engine.actions.action;
 import com.arthurl.wolfbot.game.engine.actions.AAction;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 
-public class WolfKillAction extends AAction {
+public class WolfKill extends AAction {
     {
         pattern = new Class[]{GameUser.class, GameUser.class};
         priority = ActionPriority.LOW;
@@ -15,18 +16,17 @@ public class WolfKillAction extends AAction {
         final GameUser wolf = (GameUser) objects[0];
         final GameUser vitim = (GameUser) objects[1];
         if (!vitim.inHouse()) {
-            wolf.sendMessageLang("wolf.kill-house-empty",
-                    vitim.getUser().getDiscriminator());
+            View.wolfKillHouseEmpty(game, wolf, vitim);
             return;
         }
         vitim.kill(wolf);
         if (vitim.hasVisitors()) {
             vitim.getRelated().forEach((user) -> {
                 user.kill();
-                user.sendMessage("Você morreu! Você deu o azar de esta com uma pessoa que foi atacada...");
+                View.wolfRelatedKill(game, wolf, user);
             });
-            vitim.sendMessage("Você foi morto por: " + wolf.getUser().getAsMention() + " e seus visitantes não se slavaram...");
+            View.wolfKillAndRelated(game, vitim, wolf);
         }
-        vitim.sendMessage("Você foi morto por: " + wolf.getUser().getAsMention());
+        View.wolfKill(game, vitim, wolf);
     }
 }

@@ -4,8 +4,9 @@ import com.arthurl.wolfbot.game.engine.actions.AAction;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Wolf;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 
-public class HarlotVisitAction extends AAction {
+public class HarlotVisit extends AAction {
 
     {
         pattern = new Class[]{GameUser.class, GameUser.class};
@@ -18,14 +19,13 @@ public class HarlotVisitAction extends AAction {
         final GameUser visited = (GameUser) objects[1];
         if (visited.inHouse()){
             harlot.setInHouse(false);
-            if (visited.getRole().getClass().getSuperclass() == Wolf.class){
+            if (visited.hasRole(Wolf.class)) {
                 harlot.kill();
-                harlot.sendMessage("Você {{1}} que é um lobo, e morreu!");
+                View.harlotVisitWolf(game, harlot, visited);
                 return;
             }
             visited.getRelated().add(harlot);
-            harlot.sendMessage("Você visitou {{1}} e descobriu que ele é {{2}}");
-            visited.sendMessage("Você recebeu uma visita de {{1}} que é uma porstituta!");
+            View.harlotVisit(game, harlot, visited);
         }
 
     }

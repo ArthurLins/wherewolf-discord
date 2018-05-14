@@ -3,16 +3,20 @@ package com.arthurl.wolfbot.game.engine.actions.action;
 import com.arthurl.wolfbot.game.engine.actions.AAction;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.views.View;
 
-public class PrefectShowAction extends AAction {
+public class LynchKill extends AAction {
+
     {
         pattern = new Class[]{GameUser.class};
-        priority = ActionPriority.MEDIUM;
+        priority = ActionPriority.NOW;
     }
+
     @Override
     public void execute() {
-        final GameUser prefect = (GameUser) objects[0];
-        prefect.setHidden(false);
-        game.getBroadcaster().sendLang("prefect.declare", prefect.getUser().getAsMention());
+        final GameUser killed = (GameUser) objects[0];
+        killed.kill();
+        View.lynchKill(game, killed);
+        //
     }
 }

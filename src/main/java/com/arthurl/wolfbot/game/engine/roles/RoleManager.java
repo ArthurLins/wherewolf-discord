@@ -46,19 +46,20 @@ public class RoleManager {
     }
 
 
-    public List<GameUser> aliveList(Class<? extends ARole> role, boolean superclass){
+    public List<GameUser> aliveList(Class<? extends ARole> role) {
         final List<GameUser> aliveUsers = new ArrayList<>();
         game.getGameUsers().forEach((k,v)->{
-            //System.out.println("WOLF COUNT ->" + v.getUser().getName() + "|"+ v.getRole().getClass().getSuperclass());
-            if (v.getRole().getClass() == role && v.isAlive() && !superclass){
-                aliveUsers.add(v);
-            }
-            if (v.getRole().getClass().getSuperclass() == role && v.isAlive() && superclass){
+            if (v.hasRole(role) && v.isAlive()) {
                 aliveUsers.add(v);
             }
         });
-        //System.out.println("Wolf count -> "+wolfUsers.size());
         return aliveUsers;
+    }
+
+    public boolean roleWin(Class<? extends ARole> roleWin, Class<? extends ARole> compare) {
+        final int win = aliveList(roleWin).size();
+        final int com = aliveList(compare).size();
+        return win > 0 && com == 0;
     }
 
     private void assignToUser(final GameUser user, final Class<? extends ARole> role) {

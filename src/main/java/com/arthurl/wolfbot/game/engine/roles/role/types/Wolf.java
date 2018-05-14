@@ -1,10 +1,11 @@
 package com.arthurl.wolfbot.game.engine.roles.role.types;
 
 import com.arthurl.wolfbot.game.engine.Engine;
-import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
+import com.arthurl.wolfbot.game.engine.actions.action.WolfKill;
 import com.arthurl.wolfbot.game.engine.roles.ARole;
 import com.arthurl.wolfbot.game.engine.users.Attributes;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.game.engine.votes.VoteTypes;
 import com.arthurl.wolfbot.views.View;
 
 public abstract class Wolf extends ARole {
@@ -22,14 +23,14 @@ public abstract class Wolf extends ARole {
             removeUserAttr(Attributes.DRUNK);
             return;
         }
-        if (game.getRoleManager().aliveList(Wolf.class, true).size() > 1){
-            game.getWolfVoteSelector().requestVote(selfuser, 1);
+        if (game.getRoleManager().aliveList(Wolf.class).size() > 1) {
+            game.getVoteManager().requestVote(VoteTypes.WOLF, selfuser, 1);
         } else {
             game.getDefaultUserSelector().select(selfuser, Engine.NIGHT_TIMEOUT,
                     View::wolfKillAsk,
                     (selected) -> {
                         selfuser.setInHouse(false);
-                        game.getActionManager().call(Actions.WOLFKILL, selfuser, selected);
+                        game.getActionManager().call(WolfKill.class, selfuser, selected);
                         finishNight();
             });
         }

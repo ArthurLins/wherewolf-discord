@@ -4,6 +4,7 @@ import com.arthurl.wolfbot.Bootstrap;
 import com.arthurl.wolfbot.game.engine.Engine;
 import com.arthurl.wolfbot.game.engine.actions.ActionManager;
 import com.arthurl.wolfbot.game.engine.requests.RequestManager;
+import com.arthurl.wolfbot.game.engine.roles.ARole;
 import com.arthurl.wolfbot.game.engine.roles.RoleManager;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Civilian;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Wolf;
@@ -12,13 +13,14 @@ import com.arthurl.wolfbot.game.engine.selections.DefaultUserSelector;
 import com.arthurl.wolfbot.game.engine.text.Broadcaster;
 import com.arthurl.wolfbot.game.engine.text.Lang;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
-import com.arthurl.wolfbot.game.engine.votes.VoteSelector;
-import com.arthurl.wolfbot.game.engine.votes.WolfVoteSelector;
+import com.arthurl.wolfbot.game.engine.votes.VoteManager;
 import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import java.util.function.Consumer;
 
 public class Game {
 
@@ -29,14 +31,13 @@ public class Game {
     private final Engine engine;
     private final Lang lang;
     private final User creator;
-    private final VoteSelector voteSelector;
-    private final WolfVoteSelector wolfVoteSelector;
     private final Broadcaster broadcaster;
     private final RequestManager requestManager;
     private final ActionManager actionManager;
     private final RoleManager roleManager;
     private final DefaultUserSelector defaultUserSelector;
     private final DefaultOptionSelector defaultOptionSelector;
+    private final VoteManager voteManager;
     private THashMap<String, GameUser> gameUsers = new THashMap<>();
     private volatile boolean started = false;
 
@@ -55,7 +56,6 @@ public class Game {
          final int night_timeout,
          final int day_timeout,
          final int vote_timeout) {
-
         this.maxUsers = maxUsers;
         this.minToStart = minToStart;
         this.messageChannel = mainChannel;
@@ -64,8 +64,7 @@ public class Game {
         this.engine = new Engine(this, day_timeout, night_timeout, vote_timeout);
         this.broadcaster = new Broadcaster(mainChannel, this);
         this.actionManager = new ActionManager(this);
-        this.voteSelector = new VoteSelector(this);
-        this.wolfVoteSelector = new WolfVoteSelector(this);
+        this.voteManager = new VoteManager(this);
         this.requestManager = new RequestManager(this);
         this.roleManager = new RoleManager(this);
         this.defaultUserSelector = new DefaultUserSelector(this);
@@ -89,7 +88,7 @@ public class Game {
         Bootstrap.getThreadPool().run(engine::startCycle, 5000);
     }
 
-    private synchronized void stop() {
+    public synchronized void stop() {
         if (!started)
             return;
         started = false;
@@ -116,27 +115,17 @@ public class Game {
 
     }
 
-    public synchronized boolean hasWinner() {
+    public synchronized void hasWinner(Consumer<Class<? extends ARole>> winRole, Runnable continueGame) {
         if (!isStarted()) {
-            return false;
+            return;
         }
-        final int wolfCount = getRoleManager().aliveList(Wolf.class, true).size();
-        final int civiliansCount = getRoleManager().aliveList(Civilian.class, true).size();
-        boolean hasWin = false;
-        if (wolfCount == 0 && civiliansCount > 0){
-            View.civiliansWins(this);
-            hasWin = true;
-        } else if (wolfCount > 0 && civiliansCount == 0) {
-            View.wolfsWins(this);
-            hasWin = true;
+
+        if (getRoleManager().roleWin(Civilian.class, Wolf.class)) {
+            winRole.accept(Civilian.class);
+        } else if (getRoleManager().roleWin(Wolf.class, Civilian.class)) {
+            winRole.accept(Wolf.class);
         }
-        if (hasWin){
-            stop();
-            View.gameEnd(this);
-            Bootstrap.getGameManager().stopGame(this);
-            return true;
-        }
-        return false;
+        continueGame.run();
     }
 
     public GameUser getUserById(String id) {
@@ -162,9 +151,6 @@ public class Game {
         return gameUsers;
     }
 
-    public VoteSelector getVoteSelector() {
-        return voteSelector;
-    }
 
     public Broadcaster getBroadcaster() {
         return broadcaster;
@@ -182,9 +168,6 @@ public class Game {
         return engine;
     }
 
-    public WolfVoteSelector getWolfVoteSelector() {
-        return wolfVoteSelector;
-    }
 
     public RoleManager getRoleManager() {
         return roleManager;
@@ -217,5 +200,9 @@ public class Game {
 
     public boolean isStarted() {
         return started;
+    }
+
+    public VoteManager getVoteManager() {
+        return voteManager;
     }
 }

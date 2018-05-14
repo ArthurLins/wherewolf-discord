@@ -1,7 +1,7 @@
 package com.arthurl.wolfbot.game.engine.roles.role;
 
 import com.arthurl.wolfbot.game.engine.Engine;
-import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
+import com.arthurl.wolfbot.game.engine.actions.action.HarlotVisit;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Civilian;
 import com.arthurl.wolfbot.views.View;
 
@@ -18,7 +18,7 @@ public class Harlot extends Civilian {
         userSelector(
                 View::harlotVisitAsk,
                 (response) -> {
-                    action(Actions.HARLOT_VISIT, selfuser, response);
+                    action(HarlotVisit.class, selfuser, response);
                     finishVote();
                 },
                 Engine.NIGHT_TIMEOUT

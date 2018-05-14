@@ -1,5 +1,7 @@
 package com.arthurl.wolfbot.game.engine.text;
 
+import com.arthurl.wolfbot.game.engine.util.UTF8Control;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -9,7 +11,7 @@ public class Lang {
 
     public Lang(String lang) {
         final Locale currentLocale = new Locale(lang);
-        message = ResourceBundle.getBundle("Messages", currentLocale);
+        message = ResourceBundle.getBundle("Messages", currentLocale, new UTF8Control());
     }
 
     public String get(String prop, String... str) {

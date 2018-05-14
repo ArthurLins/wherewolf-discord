@@ -1,9 +1,10 @@
 package com.arthurl.wolfbot.game.engine.roles;
 
 import com.arthurl.wolfbot.game.Game;
-import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
+import com.arthurl.wolfbot.game.engine.actions.AAction;
 import com.arthurl.wolfbot.game.engine.users.Attributes;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
+import com.arthurl.wolfbot.game.engine.votes.VoteTypes;
 
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
@@ -18,6 +19,7 @@ public abstract class ARole {
     public GameUser selfuser;
     public Game game;
 
+    //Role definition
     public String getName() {
         return name;
     }
@@ -34,19 +36,21 @@ public abstract class ARole {
         this.description = description;
     }
 
-    public Object getUserAttr(Attributes name) {
+    //End role definition
+
+    public Object getUserAttr(final Attributes name) {
         return selfuser.getAttr(name);
     }
 
-    public boolean userHasAttr(Attributes name) {
+    public boolean userHasAttr(final Attributes name) {
         return selfuser.hasAttr(name);
     }
 
-    public void removeUserAttr(Attributes name) {
+    public void removeUserAttr(final Attributes name) {
         selfuser.removeAttr(name);
     }
 
-    public void setUserAttr(Attributes name, Object value) {
+    public void setUserAttr(final Attributes name, Object value) {
         selfuser.setAttr(name, value);
     }
 
@@ -80,6 +84,7 @@ public abstract class ARole {
         return game.getLang().get(prop, strs);
     }
 
+    //Engine responses
     public void finishVote() {
         game.getEngine().fireVoteOK(selfuser);
     }
@@ -89,14 +94,16 @@ public abstract class ARole {
     }
 
     protected void defaultVote(final int mult) {
-        game.getVoteSelector().requestVote(selfuser, mult);
+        game.getVoteManager().requestVote(VoteTypes.DEFAULT, selfuser, mult);
     }
+
+    //End engine responses
 
     protected void defaultDie() {
         selfuser.setAlive(false);
     }
 
-    public void action(final Actions action, final Object... objs) {
+    public void action(final Class<? extends AAction> action, final Object... objs) {
         game.getActionManager().call(action, objs);
     }
 

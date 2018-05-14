@@ -35,16 +35,11 @@ public class GameManager {
         games.get(textChId).start();
     }
 
-    public synchronized void stopGame(String textChId) {
-        if (!games.containsKey(textChId))
-            return;
-        games.remove(textChId);
-    }
-
     public synchronized void stopGame(Game game) {
         String id = game.getMessageChannel().getId();
         if (!games.containsKey(id))
             return;
+        game.stop();
         games.remove(id);
     }
 

@@ -1,7 +1,7 @@
 package com.arthurl.wolfbot.game.engine.roles.role;
 
 import com.arthurl.wolfbot.game.engine.Engine;
-import com.arthurl.wolfbot.game.engine.actions.enums.Actions;
+import com.arthurl.wolfbot.game.engine.actions.action.GunnerKill;
 import com.arthurl.wolfbot.game.engine.roles.role.types.Civilian;
 import com.arthurl.wolfbot.game.engine.users.Attributes;
 import com.arthurl.wolfbot.views.View;
@@ -26,8 +26,8 @@ public class Gunner extends Civilian {
         final int munition = (int) getUserAttr(Attributes.MUNITION);
         if (munition > 0) {
             userSelector(
-                    (ask) -> View.hunterKillAsk(game, selfuser, munition),
-                    (response) -> action(Actions.HUNTER_KILL, selfuser, response),
+                    (ask) -> View.gunnerKillAsk(game, selfuser, munition),
+                    (response) -> action(GunnerKill.class, selfuser, response),
                     Engine.NIGHT_TIMEOUT
             );
         } else {
