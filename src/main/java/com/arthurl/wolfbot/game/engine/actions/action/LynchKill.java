@@ -9,13 +9,15 @@ public class LynchKill extends AAction {
 
     {
         pattern = new Class[]{GameUser.class};
-        priority = ActionPriority.NOW;
+        priority = ActionPriority.BLOCK;
     }
 
     @Override
     public void execute() {
+        System.out.println("lynch");
         final GameUser killed = (GameUser) objects[0];
         killed.kill();
+        killed.setHidden(false);
         View.lynchKill(game, killed);
         //
     }

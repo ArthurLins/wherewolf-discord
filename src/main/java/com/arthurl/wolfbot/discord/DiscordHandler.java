@@ -14,6 +14,9 @@ public class DiscordHandler extends ListenerAdapter{
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()){
+            return;
+        }
         Bootstrap.getGameManager().gameChatListener(event);
         final String message = event.getMessage().getContentRaw().toLowerCase();
         if (message.equals("!create") && event.getMember().hasPermission(Permission.MESSAGE_WRITE)) {

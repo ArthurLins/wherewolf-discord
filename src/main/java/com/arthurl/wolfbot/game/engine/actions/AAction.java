@@ -5,10 +5,11 @@ import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
 
 public abstract class AAction {
-    public Class[] pattern;
-    public ActionPriority priority;
-    public Object[] objects;
-    public Game game;
+
+    protected Class[] pattern;
+    protected ActionPriority priority;
+    protected Object[] objects;
+    protected Game game;
 
     public String text(String prop) {
         return game.getLang().get(prop);

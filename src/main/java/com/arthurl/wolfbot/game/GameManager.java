@@ -14,7 +14,7 @@ public class GameManager {
         games.forEach((k, v) -> v.onMessageDiscordReceived(event));
     }
 
-    public synchronized void create(MessageReceivedEvent event) {
+    public void create(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.PRIVATE)) {
             return;
         }
@@ -29,16 +29,17 @@ public class GameManager {
         games.put(event.getChannel().getId(), game);
     }
 
-    public synchronized void startGame(String textChId) {
+    public void startGame(String textChId) {
         if (!games.containsKey(textChId))
             return;
         games.get(textChId).start();
     }
 
-    public synchronized void stopGame(Game game) {
-        String id = game.getMessageChannel().getId();
+    public void stopGame(Game game) {
+        final String id = game.getMessageChannel().getId();
         if (!games.containsKey(id))
             return;
+
         game.stop();
         games.remove(id);
     }

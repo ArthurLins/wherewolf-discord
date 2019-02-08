@@ -10,6 +10,7 @@ import com.arthurl.wolfbot.game.engine.users.GameUser;
 import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,7 @@ public class RoleManager {
     public List<GameUser> aliveList(Class<? extends ARole> role) {
         final List<GameUser> aliveUsers = new ArrayList<>();
         game.getGameUsers().forEach((k,v)->{
-            if (v.hasRole(role) && v.isAlive()) {
+            if (role.isInstance(v.getRole()) && v.isAlive()) {
                 aliveUsers.add(v);
             }
         });
@@ -59,18 +60,20 @@ public class RoleManager {
     public boolean roleWin(Class<? extends ARole> roleWin, Class<? extends ARole> compare) {
         final int win = aliveList(roleWin).size();
         final int com = aliveList(compare).size();
+        System.out.println(roleWin.getName() + "| " + win + " | " + compare.getName() + "| " + com);
         return win > 0 && com == 0;
     }
 
     private void assignToUser(final GameUser user, final Class<? extends ARole> role) {
         try {
-            final ARole roleInstance = role.newInstance();
+            final ARole roleInstance = role.getDeclaredConstructor().newInstance();
             roleInstance.selfuser = user;
             roleInstance.game = game;
             roleInstance.init();
             user.setRole(roleInstance);
             View.sayRoleToUser(user);
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException
+                | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }

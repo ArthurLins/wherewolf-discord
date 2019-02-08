@@ -1,7 +1,7 @@
 package com.arthurl.wolfbot.game.engine.actions.enums;
 
 public enum ActionPriority {
-    NOW,
+    BLOCK,
     HIGH,
     MEDIUM,
     LOW,

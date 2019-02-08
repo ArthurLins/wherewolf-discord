@@ -1,7 +1,9 @@
 package com.arthurl.wolfbot.game.engine.util;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class ListManipulator {
@@ -14,26 +16,25 @@ public class ListManipulator {
      */
     @Nullable
     public static String getUniqueBigKey(Map<String, Integer> map) {
-        int bigger = 0;
-        String biggerKey = null;
-        Set<String> keySet = map.keySet();
-        for (String key : keySet) {
-            int voteQtd = map.get(key);
-            if (voteQtd > bigger) {
-                bigger = voteQtd;
-                biggerKey = key;
-            }
-        }
-        if (bigger == 0) {
+        if (map.isEmpty()){
             return null;
         }
-        for (String key : keySet) {
-            if (!biggerKey.equals(key) && map.get(key) == bigger) {
-                //System.out.println("Valores repetidos...");
-                return null;
-            }
+        final Map.Entry<String, Integer> val = Collections.max(map.entrySet(), Map.Entry.comparingByValue());
+
+        if (val == null){
+            return null;
         }
-        return biggerKey;
+
+        final int highValue = val.getValue();
+
+        if (highValue == 0){
+            return null;
+        }
+        if(map.values().stream().filter((v) -> v == highValue).count() > 1){
+            return null;
+        }
+
+        return val.getKey();
     }
 
 }

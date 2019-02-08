@@ -12,7 +12,7 @@ public class Bootstrap {
     public static void main(String[] args){
         threadPool = new ThreadPool();
         gameManager = new GameManager();
-        new DiscordClient(args[0], args[1]);
+        new DiscordClient(args[0],"");
     }
 
     public static ThreadPool getThreadPool() {

@@ -4,6 +4,7 @@ import com.arthurl.wolfbot.Bootstrap;
 import com.arthurl.wolfbot.game.Game;
 import com.arthurl.wolfbot.game.engine.actions.enums.ActionPriority;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +66,7 @@ public class ActionManager {
     public void call(Class<? extends AAction> actionClass, Object... objects) {
 
         try {
-            final AAction action = actionClass.newInstance();
+            final AAction action = actionClass.getDeclaredConstructor().newInstance();
             //Pattern validation (if needs params)
             if (action.pattern != null) {
                 if (action.pattern.length != objects.length) {
@@ -74,6 +75,7 @@ public class ActionManager {
                 }
                 int pos = 0;
                 for (Class cl : action.pattern) {
+                    System.out.println(objects);
                     if (objects[pos].getClass() != cl) {
                         System.out.println("[ACTION][ERROR]: PATTERN NOT MATCH IN TYPES");
                         return;
@@ -82,11 +84,15 @@ public class ActionManager {
                 }
                 action.game = game;
                 action.objects = objects;
-                schedule(action);
+                if (action.priority == ActionPriority.BLOCK){
+                    action.execute();
+                } else {
+                    schedule(action);
+                }
                 return;
             }
             schedule(action);
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }

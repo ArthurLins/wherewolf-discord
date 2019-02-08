@@ -19,7 +19,7 @@ public class Harlot extends Civilian {
                 View::harlotVisitAsk,
                 (response) -> {
                     action(HarlotVisit.class, selfuser, response);
-                    finishVote();
+                    //finishVote();
                 },
                 Engine.NIGHT_TIMEOUT
         );

@@ -16,6 +16,7 @@ import com.arthurl.wolfbot.game.engine.users.GameUser;
 import com.arthurl.wolfbot.game.engine.votes.VoteManager;
 import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -45,7 +46,7 @@ public class Game {
          final User creator,
          final int maxUsers,
          final int minToStart) {
-        this(mainChannel, creator, maxUsers, minToStart, "pt_br", 120000, 120000, 120000);
+        this(mainChannel, creator, maxUsers, minToStart, "pt_br", Engine.NIGHT_TIMEOUT, Engine.DAY_TIMEOUT,  Engine.VOTE_TIMEOUT);
     }
 
     Game(final MessageChannel mainChannel,
@@ -115,7 +116,7 @@ public class Game {
 
     }
 
-    public synchronized void hasWinner(Consumer<Class<? extends ARole>> winRole, Runnable continueGame) {
+    public void hasWinner(Consumer<Class<? extends ARole>> winRole, Runnable continueGame) {
         if (!isStarted()) {
             return;
         }
@@ -141,6 +142,9 @@ public class Game {
         }
         if (gameUsers.containsKey(event.getAuthor().getId())) {
             if (!gameUsers.get(event.getAuthor().getId()).isAlive()){
+                if (event.getChannelType() == ChannelType.PRIVATE){
+                    return;
+                }
                 event.getMessage().delete().queue();
             }
         }

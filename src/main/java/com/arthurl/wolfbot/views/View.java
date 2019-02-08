@@ -289,4 +289,8 @@ public class View {
     public static void wolfVoteTied(GameUser wolf) {
         wolf.sendMessage("Votação empatada... os lobos não vão atacar ng");
     }
+
+    public static void userVotedIn(GameUser user, GameUser voted) {
+        user.getGame().getBroadcaster().send(voted.getUser().getAsMention() + " votou para matar " + user.getUser().getAsMention());
+    }
 }

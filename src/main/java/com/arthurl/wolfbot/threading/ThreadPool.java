@@ -12,14 +12,14 @@ public class ThreadPool {
         final RejectedHandler rejectedHandler = new RejectedHandler();
         final ThreadFactory threadFactory = Executors.defaultThreadFactory();
         this.threadPool = new ThreadPoolExecutor(3,
-                10,
-                10L,
+                25,
+                1,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 threadFactory,
                 rejectedHandler
         );
-        this.executorService = Executors.newScheduledThreadPool(2);
+        this.executorService = Executors.newScheduledThreadPool(10);
         this.started = true;
     }
 

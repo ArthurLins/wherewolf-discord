@@ -75,9 +75,7 @@ public class GameUser {
     }
 
     public void removeAttr(Attributes attributes) {
-        if (attr.containsKey(attributes)) {
-            attr.remove(attributes);
-        }
+        attr.remove(attributes);
     }
 
     public boolean hasRole(Class<? extends ARole> role) {

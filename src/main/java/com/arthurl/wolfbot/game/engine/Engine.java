@@ -15,9 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Engine {
 
-    public static int DAY_TIMEOUT = 60000;   //1 sec
-    public static int NIGHT_TIMEOUT = 60000; //1 sec
-    public static int VOTE_TIMEOUT = 60000;  //1 sec
+    public static int DAY_TIMEOUT = 5000;   //1 sec
+    public static int NIGHT_TIMEOUT = 20000; //1 sec
+    public static int VOTE_TIMEOUT = 30000;  //1 sec
 
     private boolean waiting_night = false;
     private boolean waiting_vote = false;
@@ -41,6 +41,7 @@ public class Engine {
 
     private void day() {
         View.gameDay(game);
+        padding.clear();
         game.getGameUsers().forEach((key, user) -> {
             if (user.isAlive()) {
                 padding.put(key, user);
@@ -84,27 +85,12 @@ public class Engine {
             return;
         }
         padding.remove(gameUser.getUser().getId());
+        System.out.println("User voted  | " + padding.size());
         if (padding.isEmpty()) {
             voteOK();
         }
     }
 
-    public void fireNightOK(GameUser gameUser) {
-        if (!padding.containsKey(gameUser.getUser().getId())) {
-            return;
-        }
-        padding.remove(gameUser.getUser().getId());
-        if (padding.isEmpty()) {
-            nightOK();
-        }
-    }
-
-    public void fireActionsExecuted() {
-        checkWin(() -> {
-            View.nightResume(game);
-            day();
-        });
-    }
 
     private void voteOK() {
         game.getVoteManager().stop(
@@ -114,12 +100,30 @@ public class Engine {
                     game.getBroadcaster().send("Votação encerrada");
                     checkWin(this::night);
                 },
-                () -> View.gameVoteTied(game),
+                () -> {
+                    View.gameVoteTied(game);
+                    checkWin(this::night);
+                },
                 () -> {
                     View.inactivityForceEnd(game);
                     Bootstrap.getGameManager().stopGame(game);
                 }
         );
+    }
+
+
+    public void fireNightOK(GameUser gameUser) {
+        if (!padding.containsKey(gameUser.getUser().getId())) {
+            return;
+        }
+        padding.remove(gameUser.getUser().getId());
+    }
+
+    public void fireActionsExecuted() {
+        checkWin(() -> {
+            View.nightResume(game);
+            day();
+        });
     }
 
     private void dayOK() {

@@ -1,8 +1,10 @@
 package com.arthurl.wolfbot.game.engine.votes;
 
 import com.arthurl.wolfbot.game.Game;
+import com.arthurl.wolfbot.game.engine.Engine;
 import com.arthurl.wolfbot.game.engine.users.GameUser;
 import com.arthurl.wolfbot.game.engine.util.ListManipulator;
+import com.arthurl.wolfbot.views.View;
 import gnu.trove.map.hash.THashMap;
 
 import java.util.function.BiConsumer;
@@ -38,21 +40,26 @@ class VoteGeneric {
     }
 
     void stop(Consumer<GameUser> success, Runnable noWin, Runnable error) {
+        System.out.println("ss");
         if (!openToVote) {
             return;
         }
         openToVote = false;
         final GameUser user = getWinUser();
-        if (user != null) {
-            noWin.run();
-        } else {
-            //if not have any votes exit the game (probably afk)
-            if (this.qtdVotes() == 0) {
-                error.run();
-                return;
-            }
-            success.accept(null);
+        //if {
+        if (user != null){
+            success.accept(user);
         }
+        //if not have any votes exit the game (probably afk)
+        if (this.qtdVotes() == 0) {
+            error.run();
+            return;
+        }
+        //Tie
+        if (user == null){
+            noWin.run();
+        }
+        //}
 
     }
 
@@ -67,7 +74,7 @@ class VoteGeneric {
         game.getDefaultUserSelector().select(gameUser, timeout,
                 ask,
                 (selected) -> {
-                    addVote(selected, multiplication);
+                    addVote(selected, gameUser, multiplication);
                     onSelect.accept(gameUser, selected);
                 }
         );
@@ -78,12 +85,15 @@ class VoteGeneric {
         return votes.size();
     }
 
-    private void addVote(final GameUser user, final int qtd) {
+    private void addVote(final GameUser user, GameUser voted, final int qtd) {
         if (!votes.containsKey(user.getUser().getId())) {
             votes.put(user.getUser().getId(), 1);
-            return;
+        } else {
+            int qtdVote = votes.get(user.getUser().getId());
+            votes.replace(user.getUser().getId(), qtdVote, qtdVote + qtd);
         }
-        int qtdVote = votes.get(user.getUser().getId());
-        votes.replace(user.getUser().getId(), qtdVote, qtdVote + qtd);
+        View.userVotedIn(user, voted);
+        user.getGame().getEngine().fireVoteOK(voted);
+
     }
 }
