@@ -36,7 +36,7 @@ public class View {
         eb.setTitle(game.getLang().get("game.join", user.getName()));
         eb.setDescription(game.getLang().get("game.invite-desc"));
         eb.addField(game.getLang().get("game.players"),
-                game.getGameUsers().size() + "/" + game.getMaxUsers(),
+                game.getGameUsers().size() + "/" + game.getSettings().getMaxUsers(),
                 true);
         eb.setFooter(game.getLang().get("game.created-by",
                 game.getCreator().getName()),
@@ -51,7 +51,7 @@ public class View {
         eb.setTitle(game.getLang().get("game.invite-title"));
         eb.setDescription(game.getLang().get("game.invite-desc"));
         eb.addField(game.getLang().get("game.players"),
-                game.getGameUsers().size() + "/" + game.getMaxUsers(),
+                game.getGameUsers().size() + "/" + game.getSettings().getMaxUsers(),
                 true);
         eb.setFooter(game.getLang().get("game.created-by",
                 game.getCreator().getName()),

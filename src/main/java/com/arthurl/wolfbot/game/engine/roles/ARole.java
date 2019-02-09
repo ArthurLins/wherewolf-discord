@@ -68,11 +68,45 @@ public abstract class ARole {
         game.getDefaultUserSelector().select(selfuser, tout, ask, res);
     }
 
+
+    protected void userSelectorNight(final Consumer<GameUser> ask,
+                                final Consumer<GameUser> res) {
+        game.getDefaultUserSelector().select(selfuser, game.getSettings().getNightTime(), ask, res);
+    }
+
+    protected void userSelectorDay(final Consumer<GameUser> ask,
+                                     final Consumer<GameUser> res) {
+        game.getDefaultUserSelector().select(selfuser, game.getSettings().getDayTime(), ask, res);
+    }
+
+    protected void userSelectorVote(final Consumer<GameUser> ask,
+                                   final Consumer<GameUser> res) {
+        game.getDefaultUserSelector().select(selfuser, game.getSettings().getVoteTime(), ask, res);
+    }
+
     protected void userSelector(final Consumer<GameUser> ask,
                                 final Predicate<GameUser> cond,
                                 final Consumer<GameUser> res,
                                 final int tout) {
         game.getDefaultUserSelector().select(selfuser, tout, cond, ask, res);
+    }
+
+    protected void userSelectorNight(final Consumer<GameUser> ask,
+                                final Predicate<GameUser> cond,
+                                final Consumer<GameUser> res) {
+        game.getDefaultUserSelector().select(selfuser, game.getSettings().getNightTime(), cond, ask, res);
+    }
+
+    protected void userSelectorDay(final Consumer<GameUser> ask,
+                                final Predicate<GameUser> cond,
+                                final Consumer<GameUser> res) {
+        game.getDefaultUserSelector().select(selfuser, game.getSettings().getDayTime(), cond, ask, res);
+    }
+
+    protected void userSelectorVote(final Consumer<GameUser> ask,
+                                final Predicate<GameUser> cond,
+                                final Consumer<GameUser> res) {
+        game.getDefaultUserSelector().select(selfuser, game.getSettings().getVoteTime(), cond, ask, res);
     }
 
 
@@ -85,9 +119,9 @@ public abstract class ARole {
     }
 
     //Engine responses
-    public void finishVote() {
-        game.getEngine().fireVoteOK(selfuser);
-    }
+//    public void finishVote() {
+//        game.getEngine().fireVoteOK(selfuser);
+//    }
 
     public void finishNight() {
         game.getEngine().fireNightOK(selfuser);

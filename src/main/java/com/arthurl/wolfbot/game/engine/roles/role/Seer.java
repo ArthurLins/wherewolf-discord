@@ -15,13 +15,12 @@ public class Seer extends Civilian {
 
     @Override
     public void night() {
-        userSelector(
-                View::seerViewAsk,
-                (selected) -> {
-                    action(SeeUser.class, selfuser, selected);
-                    finishNight();
-                },
-                Engine.NIGHT_TIMEOUT
+        userSelectorNight(
+            View::seerViewAsk,
+            (selected) -> {
+                action(SeeUser.class, selfuser, selected);
+                finishNight();
+            }
         );
     }
 

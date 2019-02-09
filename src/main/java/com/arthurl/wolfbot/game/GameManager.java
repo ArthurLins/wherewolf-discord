@@ -4,10 +4,12 @@ import gnu.trove.map.hash.THashMap;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 
 public class GameManager {
 
-    private final THashMap<String, Game> games = new THashMap<>();
+    private final ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
 
     public void gameChatListener(MessageReceivedEvent event) {
 
@@ -21,11 +23,7 @@ public class GameManager {
         if (games.containsKey(event.getChannel().getId())) {
             return;
         }
-        final Game game = new Game(event.getChannel(),
-                event.getAuthor(),
-                41,
-                2
-        );
+        final Game game = new Game(event.getChannel(), event.getAuthor(), new GameSettings());
         games.put(event.getChannel().getId(), game);
     }
 

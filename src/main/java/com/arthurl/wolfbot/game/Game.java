@@ -26,8 +26,7 @@ import java.util.function.Consumer;
 public class Game {
 
     private static final int MIN_USERS_START = 120000;
-    private final int maxUsers;
-    private final int minToStart;
+
     private final MessageChannel messageChannel;
     private final Engine engine;
     private final Lang lang;
@@ -39,30 +38,17 @@ public class Game {
     private final DefaultUserSelector defaultUserSelector;
     private final DefaultOptionSelector defaultOptionSelector;
     private final VoteManager voteManager;
+    private final GameSettings gameSettings;
     private THashMap<String, GameUser> gameUsers = new THashMap<>();
     private volatile boolean started = false;
 
-    Game(final MessageChannel mainChannel,
-         final User creator,
-         final int maxUsers,
-         final int minToStart) {
-        this(mainChannel, creator, maxUsers, minToStart, "pt_br", Engine.NIGHT_TIMEOUT, Engine.DAY_TIMEOUT,  Engine.VOTE_TIMEOUT);
-    }
 
-    Game(final MessageChannel mainChannel,
-         final User creator,
-         final int maxUsers,
-         final int minToStart,
-         final String lang,
-         final int night_timeout,
-         final int day_timeout,
-         final int vote_timeout) {
-        this.maxUsers = maxUsers;
-        this.minToStart = minToStart;
+    public Game(final MessageChannel mainChannel, final User creator, GameSettings settings) {
         this.messageChannel = mainChannel;
         this.creator = creator;
-        this.lang = new Lang(lang);
-        this.engine = new Engine(this, day_timeout, night_timeout, vote_timeout);
+        this.gameSettings = settings;
+        this.lang = new Lang(settings.getLang());
+        this.engine = new Engine(this);
         this.broadcaster = new Broadcaster(mainChannel, this);
         this.actionManager = new ActionManager(this);
         this.voteManager = new VoteManager(this);
@@ -70,6 +56,7 @@ public class Game {
         this.roleManager = new RoleManager(this);
         this.defaultUserSelector = new DefaultUserSelector(this);
         this.defaultOptionSelector = new DefaultOptionSelector(this);
+
         //
         View.gameInit(this);
     }
@@ -79,7 +66,7 @@ public class Game {
         if (started) {
             return;
         }
-        if (gameUsers.size() < minToStart) {
+        if (gameUsers.size() < gameSettings.getMinUsers()) {
             View.insufficientUsersToStart(this);
             return;
         }
@@ -89,7 +76,7 @@ public class Game {
         Bootstrap.getThreadPool().run(engine::startCycle, 5000);
     }
 
-    public synchronized void stop() {
+    public void stop() {
         if (!started)
             return;
         started = false;
@@ -100,7 +87,7 @@ public class Game {
         if (started) {
             return;
         }
-        if (maxUsers <= gameUsers.size()) {
+        if (gameSettings.getMaxUsers() <= gameUsers.size()) {
             View.gameFull(this, user);
             return;
         }
@@ -123,8 +110,10 @@ public class Game {
 
         if (getRoleManager().roleWin(Civilian.class, Wolf.class)) {
             winRole.accept(Civilian.class);
+            return;
         } else if (getRoleManager().roleWin(Wolf.class, Civilian.class)) {
             winRole.accept(Wolf.class);
+            return;
         }
         continueGame.run();
     }
@@ -185,10 +174,9 @@ public class Game {
         return defaultOptionSelector;
     }
 
-    public int getMaxUsers() {
-        return maxUsers;
+    public GameSettings getSettings() {
+        return gameSettings;
     }
-
 
     public User getCreator() {
         return creator;

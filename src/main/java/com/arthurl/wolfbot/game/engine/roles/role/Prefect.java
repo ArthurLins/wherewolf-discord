@@ -27,7 +27,7 @@ public class Prefect extends Civilian {
                     }
                     finishNight();
                 },
-                Engine.NIGHT_TIMEOUT
+                game.getSettings().getNightTime()
         );
     }
 

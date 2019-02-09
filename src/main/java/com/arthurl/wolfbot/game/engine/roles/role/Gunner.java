@@ -25,10 +25,9 @@ public class Gunner extends Civilian {
     public void day() {
         final int munition = (int) getUserAttr(Attributes.MUNITION);
         if (munition > 0) {
-            userSelector(
-                    (ask) -> View.gunnerKillAsk(game, selfuser, munition),
-                    (response) -> action(GunnerKill.class, selfuser, response),
-                    Engine.NIGHT_TIMEOUT
+            userSelectorNight(
+                (ask) -> View.gunnerKillAsk(game, selfuser, munition),
+                (response) -> action(GunnerKill.class, selfuser, response)
             );
         } else {
             View.notHaveMonition(game, selfuser);

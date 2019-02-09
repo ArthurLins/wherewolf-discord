@@ -15,13 +15,11 @@ public class Harlot extends Civilian {
 
     @Override
     public void night() {
-        userSelector(
-                View::harlotVisitAsk,
-                (response) -> {
-                    action(HarlotVisit.class, selfuser, response);
-                    //finishVote();
-                },
-                Engine.NIGHT_TIMEOUT
+        userSelectorNight(
+            View::harlotVisitAsk,
+            (response) -> {
+                action(HarlotVisit.class, selfuser, response);
+            }
         );
     }
 }

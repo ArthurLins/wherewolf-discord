@@ -17,14 +17,13 @@ public class Dectetive extends Civilian {
 
     @Override
     public void day(){
-        userSelector(
-                (ask) -> ask.sendMessage("Escolha uma pessoa para investigar"),
-                (selected)->{
-                    action(SeeUser.class, selfuser, selected);
-                    Randomize.propabilityCall(40, ()->
-                            action(DectetiveExpose.class, selfuser));
-                },
-                Engine.NIGHT_TIMEOUT
+        userSelectorNight(
+            (ask) -> ask.sendMessage("Escolha uma pessoa para investigar"),
+            (selected)->{
+                action(SeeUser.class, selfuser, selected);
+                Randomize.propabilityCall(40, ()->
+                        action(DectetiveExpose.class, selfuser));
+            }
         );
     }
 }

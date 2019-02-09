@@ -26,7 +26,15 @@ public abstract class Wolf extends ARole {
         if (game.getRoleManager().aliveList(Wolf.class).size() > 1) {
             game.getVoteManager().requestVote(VoteTypes.WOLF, selfuser, 1);
         } else {
-            game.getDefaultUserSelector().select(selfuser, Engine.NIGHT_TIMEOUT,
+//            userSelectorNight(
+//                View::wolfKillAsk,
+//                (selected) -> {
+//                    selfuser.setInHouse(false);
+//                    game.getActionManager().call(WolfKill.class, selfuser, selected);
+//                    finishNight();
+//                }
+//            );
+            game.getDefaultUserSelector().select(selfuser, game.getSettings().getNightTime(),
                     View::wolfKillAsk,
                     (selected) -> {
                         selfuser.setInHouse(false);

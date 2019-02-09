@@ -22,6 +22,7 @@ public class VoteManager {
                        final int tout,
                        final Consumer<GameUser> ask,
                        final BiConsumer<GameUser, GameUser> onSelect) {
+
         if (votePools.containsKey(type)) {
             votePools.get(type).start();
             return;
@@ -39,12 +40,13 @@ public class VoteManager {
     }
 
     public void wolfVoteStart() {
-        this.start(VoteTypes.WOLF, Engine.NIGHT_TIMEOUT, View::wolfVoteAsk, View::wolfVoteSelect);
+
+        this.start(VoteTypes.WOLF, game.getSettings().getNightTime(), View::wolfVoteAsk, View::wolfVoteSelect);
     }
 
 
     public void defaultVoteStart() {
-        this.start(VoteTypes.DEFAULT, Engine.VOTE_TIMEOUT, View::defaultVoteAsk, View::defaultVoteSelection);
+        this.start(VoteTypes.DEFAULT, game.getSettings().getVoteTime(), View::defaultVoteAsk, View::defaultVoteSelection);
     }
 
     public void stop(VoteTypes type, Consumer<GameUser> winner, Runnable noWin, Runnable error) {

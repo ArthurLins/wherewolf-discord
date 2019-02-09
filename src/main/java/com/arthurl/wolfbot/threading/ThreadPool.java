@@ -33,15 +33,21 @@ public class ThreadPool {
         }
     }
 
-    public void run(Runnable rn, int delay){
+    public ScheduledFuture run(Runnable rn, int delay){
         try {
             if (this.isStarted()) {
-                this.executorService.schedule(rn, delay, TimeUnit.MILLISECONDS);
+                return this.executorService.schedule(rn, delay, TimeUnit.MILLISECONDS);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
+
+    public ScheduledFuture periodic(Runnable runnable, int delay){
+        return this.executorService.scheduleWithFixedDelay(runnable, 0,delay, TimeUnit.MILLISECONDS);
+    }
+
     private boolean isStarted() {
         return started;
     }
